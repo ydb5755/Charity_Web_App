@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}<h1>Homepage</h1>{% endblock title %}
+{% block content %}
+    {% for charity in all_charities %}
+        <div class="card">
+            <p>{{ charity.charity_name }}</p>
+            <button>{{ url_for('organization.charity_page', org_id=charity.id) }}</button>
+        </div>
+    {% endfor %}
+{% endblock content %}

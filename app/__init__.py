@@ -20,4 +20,11 @@ def create_app():
     login_manager.init_app(app)
     mail.init_app(app)
 
+    from app.donor import donor
+    from app.organization import organization
+    from app.main import main
+    app.register_blueprint(main)
+    app.register_blueprint(donor)
+    app.register_blueprint(organization)
+
     return app

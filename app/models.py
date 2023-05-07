@@ -50,7 +50,9 @@ class Receipt(db.Model):
 
 
 class Pledge(db.Model):
-    id        = Column(Integer, primary_key=True)
-    frequency = Column(Time, nullable=False)
-    amount    = Column(Integer, nullable=False)
-    donor_id  = Column(Integer, ForeignKey('donor.id'))
+    id         = Column(Integer, primary_key=True)
+    frequency  = Column(Time, nullable=False)
+    start_date = Column(DateTime)
+    end_date   = Column(DateTime)
+    amount     = Column(Integer, nullable=False)
+    donor_id   = Column(Integer, ForeignKey('donor.id'))
