@@ -22,7 +22,7 @@ class Donor(db.Model, UserMixin):
     pledges         = db.relationship('Pledge', backref='donor', lazy='dynamic')
 
 class Charity(db.Model, UserMixin):
-    id               = Column(Integer, primary_key=True)
+    id               = Column(Integer, primary_key=True, autoincrement=False)
     charity_name     = Column(String(64), nullable=False)
     address          = Column(String(64), nullable=False)
     zip_code         = Column(String(64), nullable=False)
