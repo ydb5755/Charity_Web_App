@@ -19,7 +19,7 @@ def create_app():
     migrate.init_app(app,db)
     login_manager.init_app(app)
     mail.init_app(app)
-    from app.models import Donor, Charity
+    from app.models import Donor, Charity, Admin
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -27,6 +27,8 @@ def create_app():
             return Donor.query.get(int(user_id))
         elif session['account_type'] == 'Charity':
             return Charity.query.get(int(user_id))
+        elif session['account_type'] == 'Admin':
+            return Admin.query.get(int(user_id))
         else:
             return None
 
