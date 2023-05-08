@@ -1,6 +1,6 @@
 from app.main import main
 from flask import render_template, url_for, redirect, flash, session
-from app.models import Charity, Donor, Admin
+from app.models import Charity, Donor
 from app.main.forms import LoginForm, DonorSignUpForm, CharitySignUpForm
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -23,13 +23,6 @@ def login():
             if not donor or not check_password_hash(donor.password, form.password.data):
                 flash('Please check your login details and try again.')
                 return redirect(url_for('main.login'))
-            all_admins = Admin.query.all()
-            for admin in all_admins:
-                if donor.email == admin.email:
-                    session['account_type'] = 'Admin'
-                    login_user(admin, remember=form.remember.data)
-                    flash("You've been logged in successfully!")
-                    return redirect(url_for('main.home'))
             session['account_type'] = 'Donor'
             login_user(donor, remember=form.remember.data)
         if form.type_of_user == 'Charity':
@@ -98,8 +91,6 @@ def signup():
                         account_number = charity_form.account_number.data,
         )
         db.session.add(charity)
-        for admin in Admin.query.all():
-            admin.charities_to_confirm.append(charity)
         db.session.commit()
         flash('Your charity has been submitted for review! One of our staff will reach out to you in the next couple of business days to confirm details and activate your account.')
         return redirect(url_for('main.home'))

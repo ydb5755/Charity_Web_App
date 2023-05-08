@@ -19,11 +19,10 @@ class Donor(db.Model, UserMixin):
     current_balance = Column(Integer, default=0)
     auto_replenish  = Column(Boolean, default=False)
     daily_pledges   = Column(Integer, default=0)
+    admin           = Column(Boolean, default=False)
     receipts        = db.relationship('Receipt', backref='donor', lazy='dynamic')
     pledges         = db.relationship('Pledge', backref='donor', lazy='dynamic')
 
-class Admin(Donor, db.Model, UserMixin):
-    charities_to_confirm = db.relationship('Charity', backref='admin', lazy='dynamic')
 
 class Charity(db.Model, UserMixin):
     id               = Column(Integer, primary_key=True, autoincrement=False, unique=True)
@@ -41,7 +40,6 @@ class Charity(db.Model, UserMixin):
     account_number   = Column(String(64), nullable=False)
     balance          = Column(Integer, default=0)
     authenticated    = Column(Boolean, default=False)
-    admin_id         = Column(Integer, ForeignKey('admin.id'))
     receipts         = db.relationship('Receipt', backref='charity', lazy='dynamic')
 
 

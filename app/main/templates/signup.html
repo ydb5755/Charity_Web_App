@@ -1,0 +1,85 @@
+{% extends 'partials/base.html' %}
+{% block title %}Signup{% endblock title %}
+{% block content %}
+<h1>Donor Sign Up</h1>
+<form method="post" enctype="multipart/form-data">
+    {{ donor_form.hidden_tag() }}
+
+    {{ donor_form.first_name.label }}
+    {{ donor_form.first_name() }}<br/>
+
+    {{ donor_form.last_name.label }}
+    {{ donor_form.last_name() }}<br/>
+
+    {{ donor_form.address.label }}
+    {{ donor_form.address() }}<br/>
+
+    {{ donor_form.zip_code.label }}
+    {{ donor_form.zip_code() }}<br/>
+
+    {{ donor_form.phone_home.label }}
+    {{ donor_form.phone_home() }}<br/>
+
+    {{ donor_form.phone_cell.label }}
+    {{ donor_form.phone_cell() }}<br/>
+
+    {{ donor_form.email.label }}
+    {{ donor_form.email() }}<br/>
+
+    {{ donor_form.password.label }}
+    {{ donor_form.password() }}<br/>
+
+    {{ donor_form.confirm_password.label }}
+    {{ donor_form.confirm_password() }}<br/>
+
+    {{ donor_form.submit() }}
+</form>
+<h1>Charity Sign up</h1>
+<form method="post" enctype="multipart/form-data">
+    {{ charity_form.hidden_tag() }}
+
+    {{ charity_form.id.label }}
+    {{ charity_form.id() }}<br/>
+
+    {{ charity_form.charity_name.label }}
+    {{ charity_form.charity_name() }}<br/>
+
+    {{ charity_form.address.label }}
+    {{ charity_form.address() }}<br/>
+
+    {{ charity_form.zip_code.label }}
+    {{ charity_form.zip_code() }}<br/>
+
+    {{ charity_form.phone.label }}
+    {{ charity_form.phone() }}<br/>
+
+    {{ charity_form.website.label }}
+    {{ charity_form.website() }}<br/>
+
+    {{ charity_form.email.label }}
+    {{ charity_form.email() }}<br/>
+
+    {{ charity_form.password.label }}
+    {{ charity_form.password() }}<br/>
+
+    {{ charity_form.confirm_password.label }}
+    {{ charity_form.confirm_password() }}<br/>
+
+    {{ charity_form.contact_name.label }}
+    {{ charity_form.contact_name() }}<br/>
+
+    {{ charity_form.contact_cell.label }}
+    {{ charity_form.contact_cell() }}<br/>
+
+    {{ charity_form.contact_position.label }}
+    {{ charity_form.contact_position() }}<br/>
+
+    {{ charity_form.bank.label }}
+    {{ charity_form.bank() }}<br/>
+
+    {{ charity_form.account_number.label }}
+    {{ charity_form.account_number() }}<br/>
+
+    {{ charity_form.submit() }}
+</form>
+{% endblock content %}
