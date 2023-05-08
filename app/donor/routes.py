@@ -2,7 +2,7 @@ from app.donor import donor
 from flask import render_template, redirect, flash, url_for
 from app.models import Donor, Charity
 from flask_login import current_user, login_required
-from app.donor.forms import AddAdmin, RemoveAdmin
+from app.donor.forms import AddAdmin, RemoveAdmin, AddFunds
 from app import db
 
 
@@ -28,9 +28,16 @@ def profile_page(donor_id):
         db.session.commit()
         flash('Admin priviliges removed from user')
         return redirect(url_for('donor.profile_page', donor_id=current_user.id))
+    add_funds_form = AddFunds()
+    if add_funds_form.validate_on_submit():
+        donor.current_balance += add_funds_form.amount.data
+        db.session.commit()
+        flash('Funds added!')
+        return redirect(url_for('donor.profile_page', donor_id=current_user.id))
     return render_template('profile.html',
                            donor=donor,
                            charities_to_be_confirmed=charities_to_be_confirmed,
                            add_admin_form=add_admin_form,
-                           remove_admin_form=remove_admin_form)
+                           remove_admin_form=remove_admin_form,
+                           add_funds_form=add_funds_form)
 

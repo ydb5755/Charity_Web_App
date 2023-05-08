@@ -22,6 +22,7 @@ class Donor(db.Model, UserMixin):
     admin           = Column(Boolean, default=False)
     receipts        = db.relationship('Receipt', backref='donor', lazy='dynamic')
     pledges         = db.relationship('Pledge', backref='donor', lazy='dynamic')
+    donations       = db.relationship('Donation', backref='donor', lazy='dynamic')
 
 
 class Charity(db.Model, UserMixin):
@@ -41,8 +42,8 @@ class Charity(db.Model, UserMixin):
     balance          = Column(Integer, default=0)
     authenticated    = Column(Boolean, default=False)
     receipts         = db.relationship('Receipt', backref='charity', lazy='dynamic')
-
-
+    pledges         = db.relationship('Pledge', backref='donor', lazy='dynamic')
+    donations       = db.relationship('Donation', backref='donor', lazy='dynamic')
 
 
 class Receipt(db.Model):
@@ -53,7 +54,6 @@ class Receipt(db.Model):
     charity_id = Column(Integer, ForeignKey('charity.id'))
 
 
-
 class Pledge(db.Model):
     id         = Column(Integer, primary_key=True)
     frequency  = Column(Time, nullable=False)
@@ -61,3 +61,11 @@ class Pledge(db.Model):
     end_date   = Column(DateTime)
     amount     = Column(Integer, nullable=False)
     donor_id   = Column(Integer, ForeignKey('donor.id'))
+    charity_id = Column(Integer, ForeignKey('charity.id'))
+
+
+class Donation(db.Model):
+    id         = Column(Integer, primary_key=True)
+    amount     = Column(Integer, nullable=False)
+    donor_id   = Column(Integer, ForeignKey('donor.id'))
+    charity_id = Column(Integer, ForeignKey('charity.id'))
