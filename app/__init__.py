@@ -31,7 +31,7 @@ def create_app():
             return charity
         else:
             return None
-
+    login_manager.login_view = 'main.login'
     from app.donor import donor
     from app.organization import organization
     from app.main import main

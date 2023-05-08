@@ -7,6 +7,10 @@
     <title>Profile Page</title>
 </head>
 <body>
-    
+    {% if current_user.admin == True %}
+        {% for charity in charities_to_be_confirmed %}
+            <p>Authenticate {{ charity.charity_name }} by clicking <a href="{{ url_for('organization.authenticate', charity_id=charity.id) }}">here</a></p>
+        {% endfor %}
+    {% endif %}
 </body>
 </html>

@@ -1,5 +1,5 @@
 from app.main import main
-from flask import render_template, url_for, redirect, flash, session
+from flask import render_template, url_for, redirect, flash, session, request
 from app.models import Charity, Donor
 from app.main.forms import LoginForm, DonorSignUpForm, CharitySignUpForm
 from flask_login import login_user, logout_user, current_user, login_required
@@ -34,7 +34,8 @@ def login():
                 return redirect(url_for('main.home'))
             login_user(charity, remember=form.remember.data)
         flash("You've been logged in successfully!")
-        return redirect(url_for('main.home'))
+        next_page = request.args.get('next')
+        return redirect(next_page) if next_page else redirect(url_for('main.home'))
     return render_template('login.html', form=form)
 
 @main.route('/signup', methods=('GET', 'POST'))
@@ -66,13 +67,13 @@ def signup():
         return redirect(url_for('main.login'))
     charity_form = CharitySignUpForm()
     if charity_form.validate_on_submit():
-        if Charity.query.filter_by(id=charity_form.id.data):
+        if Charity.query.filter_by(id=charity_form.id.data).first():
             flash('A charity with this id already exists with us. Either check your id or try logging in.')
             return redirect(url_for('main.signup'))
         if charity_form.password.data != charity_form.confirm_password.data:
             flash('Passwords do not match, please try again')
             return redirect(url_for('main.signup'))
-        pw = generate_password_hash(charity_form.password.data, method='sha256')
+        pw = generate_password_hash(charity_form.password.data, method='scrypt')
         charity = Charity(
                         id = charity_form.id.data,
                         charity_name = charity_form.charity_name.data,
