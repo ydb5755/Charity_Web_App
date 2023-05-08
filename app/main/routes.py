@@ -18,14 +18,13 @@ def login():
         return redirect(url_for('main.home'))
     form = LoginForm()
     if form.validate_on_submit():
-        if form.type_of_user == 'Donor':
+        if form.type_of_user.data == 'Donor':
             donor = Donor.query.filter_by(email=form.email.data).first()
             if not donor or not check_password_hash(donor.password, form.password.data):
                 flash('Please check your login details and try again.')
                 return redirect(url_for('main.login'))
-            session['account_type'] = 'Donor'
             login_user(donor, remember=form.remember.data)
-        if form.type_of_user == 'Charity':
+        if form.type_of_user.data == 'Charity':
             charity = Charity.query.filter_by(email=form.email.data).first()
             if not charity or not check_password_hash(charity.password, form.password.data):
                 flash('Please check your login details and try again.')
@@ -33,7 +32,6 @@ def login():
             if charity.authenticated == False:
                 flash('Your charity has not been confirmed yet, you will have to wait to login')
                 return redirect(url_for('main.home'))
-            session['account_type'] = 'Charity'
             login_user(charity, remember=form.remember.data)
         flash("You've been logged in successfully!")
         return redirect(url_for('main.home'))
@@ -45,13 +43,13 @@ def signup():
         return redirect(url_for('main.home'))
     donor_form = DonorSignUpForm()
     if donor_form.validate_on_submit():
-        if Donor.query.filter_by(email=donor_form.email.data):
+        if Donor.query.filter_by(email=donor_form.email.data).first():
             flash('This email is already signed up, please try another email or try to log in using this email')
             return redirect(url_for('main.signup'))
         if donor_form.password.data != donor_form.confirm_password.data:
             flash('Passwords do not match, please try again')
             return redirect(url_for('main.signup'))
-        pw = generate_password_hash(donor_form.password.data, method='sha256')
+        pw = generate_password_hash(donor_form.password.data, method='scrypt')
         donor = Donor(
                     first_name=donor_form.first_name.data,
                     last_name=donor_form.last_name.data,

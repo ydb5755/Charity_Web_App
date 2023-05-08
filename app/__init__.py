@@ -23,10 +23,12 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
-        if session['account_type'] == 'Donor':
-            return Donor.query.get(int(user_id))
-        elif session['account_type'] == 'Charity':
-            return Charity.query.get(int(user_id))
+        donor = Donor.query.get(user_id)
+        charity = Charity.query.get(user_id)
+        if donor:
+            return donor
+        elif charity:
+            return charity
         else:
             return None
 
