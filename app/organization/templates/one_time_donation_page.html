@@ -1,0 +1,20 @@
+{% extends 'partials/base.html' %}
+{% block title %}Donation Page{% endblock title %}
+{% block content %}
+<br/>
+<br/>
+<br/>
+<br/>
+<h1>Single Donation Form</h1>
+<form method="post" action="{{ url_for('organization.one_time_donation_page', charity_id=charity.id, donor_id=donor.id) }}" enctype="multipart/form-data">
+    {{ sd_form.hidden_tag() }}
+
+    {{ sd_form.amount.label }}
+    {{ sd_form.amount() }}<br/>
+    {% for error in sd_form.amount.errors %}
+        <p>{{ error }}</p>
+    {% endfor %}
+
+    {{ sd_form.submit() }}<br/>
+</form>
+{% endblock content %}

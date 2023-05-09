@@ -56,12 +56,16 @@ class Receipt(db.Model):
 
 class Pledge(db.Model):
     id         = Column(Integer, primary_key=True)
-    frequency  = Column(Time, nullable=False)
+    frequency  = Column(String, nullable=False)
     start_date = Column(DateTime)
     end_date   = Column(DateTime)
     amount     = Column(Integer, nullable=False)
     donor_id   = Column(Integer, ForeignKey('donor.id'))
     charity_id = Column(Integer, ForeignKey('charity.id'))
+
+    def process_pledge(self):
+        db.session.add(self)
+        db.session.commit()
 
 
 class Donation(db.Model):
@@ -69,3 +73,9 @@ class Donation(db.Model):
     amount     = Column(Integer, nullable=False)
     donor_id   = Column(Integer, ForeignKey('donor.id'))
     charity_id = Column(Integer, ForeignKey('charity.id'))
+
+    def process_donation(self):
+        self.donor.current_balance -= self.amount
+        self.charity.balance += self.amount
+        db.session.add(self)
+        db.session.commit()
