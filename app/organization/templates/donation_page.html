@@ -1,4 +1,39 @@
 {% extends 'partials/base.html' %}
 {% block title %}Donation Page{% endblock title %}
 {% block content %}
+<h1>Recurring Donation Form</h1>
+<form method="post" action="{{ url_for('organization.donation_page', charity_id=charity.id, donor_id=donor.id) }}" enctype="multipart/form-data">
+    {{ rd_form.hidden_tag() }}
+
+    {{ rd_form.amount.label }}
+    {{ rd_form.amount() }}<br/>
+
+    {{ rd_form.how_often.label }}
+    {{ rd_form.how_often() }}<br/>
+
+    {{ rd_form.start.label }}
+    {{ rd_form.start() }}<br/>
+
+    {{ rd_form.start_time.label }}
+    {{ rd_form.start_time() }}<br/>
+
+    {{ rd_form.end.label }}
+    {{ rd_form.end() }}<br/>
+
+    {{ rd_form.end_time.label }}
+    {{ rd_form.end_time() }}<br/>
+
+    {{ rd_form.submit() }}<br/>
+</form><br/>
+
+
+<h1>Single Donation Form</h1>
+<form method="post" action="{{ url_for('organization.donation_page', charity_id=charity.id, donor_id=donor.id) }}" enctype="multipart/form-data">
+    {{ sd_form.hidden_tag() }}
+
+    {{ sd_form.amount.label }}
+    {{ sd_form.amount() }}<br/>
+
+    {{ sd_form.submit() }}<br/>
+</form>
 {% endblock content %}

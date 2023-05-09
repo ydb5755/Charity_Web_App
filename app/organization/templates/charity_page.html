@@ -2,7 +2,7 @@
 {% block title %}Charity Page{% endblock title %}
 {% block content %}
 
-{% with charity %}
+{% with charity=charity %}
     <h1>Donate <a href="{{ url_for('organization.donation_page', charity_id=charity.id, donor_id=current_user.id) }}">Here</a></h1>
 {% endwith %}
 {% endblock content %}

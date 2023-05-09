@@ -1,9 +1,10 @@
 from app.organization import organization
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
-from app.models import Charity, Donor
+from app.models import Charity, Donor, Pledge, Donation
 from app import db
 from app.organization.forms import RecurringDonationForm, SingleDonationForm
+from datetime import datetime
 
 
 
@@ -26,18 +27,20 @@ def authenticate(charity_id):
     flash('Charity has been authenticated!')
     return redirect(url_for('donor.profile_page', donor_id=current_user.id))
 
-@organization.route('/donation_page/<charity_id>/<donor_id>')
+@organization.route('/donation_page/<charity_id>/<donor_id>', methods=('GET', 'POST'))
 @login_required
 def donation_page(charity_id, donor_id):
     charity = Charity.query.filter_by(id=charity_id).first()
     donor = Donor.query.filter_by(id=donor_id).first()
     rd_form = RecurringDonationForm()
-    if rd_form.validate_on_submit():
-        pass
-
     sd_form = SingleDonationForm()
+    if rd_form.validate_on_submit():
+        print(rd_form.start)
+        return redirect(url_for('organization.donation_page', charity_id=charity.id, donor_id=donor.id))
+
     if sd_form.validate_on_submit():
-        pass
+        return redirect(url_for('organization.donation_page', charity_id=charity.id, donor_id=donor.id))
+
 
     return render_template('donation_page.html',
                            charity=charity,

@@ -42,8 +42,8 @@ class Charity(db.Model, UserMixin):
     balance          = Column(Integer, default=0)
     authenticated    = Column(Boolean, default=False)
     receipts         = db.relationship('Receipt', backref='charity', lazy='dynamic')
-    pledges         = db.relationship('Pledge', backref='donor', lazy='dynamic')
-    donations       = db.relationship('Donation', backref='donor', lazy='dynamic')
+    pledges         = db.relationship('Pledge', backref='charity', lazy='dynamic')
+    donations       = db.relationship('Donation', backref='charity', lazy='dynamic')
 
 
 class Receipt(db.Model):
