@@ -1,6 +1,6 @@
 from app import db
 from flask_login import UserMixin, current_user
-from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, DateTime, Time
+from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, DateTime, Time, Float
 from datetime import datetime, timezone
 
 
@@ -17,9 +17,9 @@ class Donor(db.Model, UserMixin):
     bank            = Column(String(64))
     account_number  = Column(String(64))
     name_on_account = Column(String(64))
-    current_balance = Column(Integer, default=0)
+    current_balance = Column(Float, default=0)
     auto_replenish  = Column(Boolean, default=False)
-    daily_pledges   = Column(Integer, default=0)
+    daily_pledges   = Column(Float, default=0)
     admin           = Column(Boolean, default=False)
     receipts        = db.relationship('Receipt', backref='donor', lazy='dynamic')
     pledges         = db.relationship('Pledge', backref='donor', lazy='dynamic')
@@ -40,7 +40,7 @@ class Charity(db.Model, UserMixin):
     contact_position = Column(String(64))
     bank             = Column(String(64), nullable=False)
     account_number   = Column(String(64), nullable=False)
-    balance          = Column(Integer, default=0)
+    balance          = Column(Float, default=0)
     authenticated    = Column(Boolean, default=False)
     receipts         = db.relationship('Receipt', backref='charity', lazy='dynamic')
     pledges         = db.relationship('Pledge', backref='charity', lazy='dynamic')
@@ -94,12 +94,12 @@ class Pledge(db.Model):
 
 class Donation(db.Model):
     id         = Column(Integer, primary_key=True)
-    amount     = Column(Integer, nullable=False)
+    amount     = Column(Float, nullable=False)
     donor_id   = Column(Integer, ForeignKey('donor.id'))
     charity_id = Column(Integer, ForeignKey('charity.id'))
 
     def process_donation(self):
-        self.donor.current_balance -= self.amount
-        self.charity.balance += self.amount
+        self.donor.current_balance -= float(self.amount)
+        self.charity.balance += float(self.amount)
         db.session.add(self)
         db.session.commit()

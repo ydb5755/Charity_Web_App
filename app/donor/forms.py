@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, IntegerField
+from wtforms import StringField, SubmitField, SelectField, IntegerField, FloatField
 from wtforms.validators import DataRequired, ValidationError
 from app.models import Donor
 
@@ -20,5 +20,5 @@ class RemoveAdmin(FlaskForm):
     submit = SubmitField('Remove Admin')
 
 class AddFunds(FlaskForm):
-    amount = IntegerField('Amount', validators=[DataRequired()])
+    amount = FloatField('Amount', validators=[DataRequired()])
     submit = SubmitField('Add Funds')

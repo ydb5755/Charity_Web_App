@@ -9,7 +9,19 @@
     <br/>
     {% if current_user.id == 1 %}
         <a href="{{ url_for('donor.add_admin') }}">Add Admin</a><br/>
-        <a href="{{ url_for('donor.remove_admin') }}">Remove Admin</a>
+        <a href="{{ url_for('donor.remove_admin') }}">Remove Admin</a><br/>
+    {% endif %}
+    <h3>Current Funds: {{ current_user.current_balance }}</h3>
+    {% if is_donor %}
+        <h3>Add Funds</h3><br/>
+        <form method="post" enctype="multipart/form-data">
+            {{ add_funds_form.hidden_tag() }}
+
+            {{ add_funds_form.amount.label }}
+            {{ add_funds_form.amount() }}<br/>
+
+            {{ add_funds_form.submit() }}
+        </form>
     {% endif %}
 {% endblock content %}
 

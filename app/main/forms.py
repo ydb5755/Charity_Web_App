@@ -4,8 +4,9 @@ from wtforms import StringField, \
                     PasswordField, \
                     SubmitField, \
                     SelectField, \
-                    BooleanField
-from wtforms.validators import DataRequired
+                    BooleanField,\
+                    IntegerField
+from wtforms.validators import DataRequired, ValidationError, NumberRange
 
 
 class LoginForm(FlaskForm):
@@ -28,7 +29,7 @@ class DonorSignUpForm(FlaskForm):
     submit           = SubmitField('Sign Up')
 
 class CharitySignUpForm(FlaskForm):
-    id               = StringField('Charity ID', validators=[DataRequired()])
+    id               = IntegerField('Charity ID', validators=[DataRequired(), NumberRange(min=5000)])
     charity_name     = StringField('Charity Name', validators=[DataRequired()])
     address          = StringField('Address', validators=[DataRequired()])
     zip_code         = StringField('Zipcode', validators=[DataRequired()])

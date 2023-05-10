@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 from app.donor.forms import AddAdmin, RemoveAdmin, AddFunds
 from app import db
 
-
+is_donor = isinstance(current_user, Donor)
 @donor.route('/profile/<donor_id>', methods=('GET', 'POST'))
 @login_required
 def profile_page(donor_id):
@@ -15,14 +15,16 @@ def profile_page(donor_id):
     charities_to_be_confirmed = Charity.query.filter_by(authenticated=False)
     add_funds_form = AddFunds()
     if add_funds_form.validate_on_submit():
-        donor.current_balance += add_funds_form.amount.data
+        donor.current_balance += float(add_funds_form.amount.data)
         db.session.commit()
         flash('Funds added!')
         return redirect(url_for('donor.profile_page', donor_id=current_user.id))
+    print(add_funds_form.errors)
     return render_template('profile.html',
                            donor=donor,
                            charities_to_be_confirmed=charities_to_be_confirmed,
-                           add_funds_form=add_funds_form)
+                           add_funds_form=add_funds_form,
+                           is_donor=is_donor)
 
 @donor.route('/add_admin', methods=('GET', 'POST'))
 @login_required

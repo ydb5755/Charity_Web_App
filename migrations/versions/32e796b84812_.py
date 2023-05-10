@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 541eb7efd137
+Revision ID: 32e796b84812
 Revises: 
-Create Date: 2023-05-09 09:09:40.339064
+Create Date: 2023-05-10 15:40:09.849783
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '541eb7efd137'
+revision = '32e796b84812'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -32,7 +32,7 @@ def upgrade():
     sa.Column('contact_position', sa.String(length=64), nullable=True),
     sa.Column('bank', sa.String(length=64), nullable=False),
     sa.Column('account_number', sa.String(length=64), nullable=False),
-    sa.Column('balance', sa.Integer(), nullable=True),
+    sa.Column('balance', sa.Float(), nullable=True),
     sa.Column('authenticated', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('contact_cell'),
@@ -52,9 +52,9 @@ def upgrade():
     sa.Column('bank', sa.String(length=64), nullable=True),
     sa.Column('account_number', sa.String(length=64), nullable=True),
     sa.Column('name_on_account', sa.String(length=64), nullable=True),
-    sa.Column('current_balance', sa.Integer(), nullable=True),
+    sa.Column('current_balance', sa.Float(), nullable=True),
     sa.Column('auto_replenish', sa.Boolean(), nullable=True),
-    sa.Column('daily_pledges', sa.Integer(), nullable=True),
+    sa.Column('daily_pledges', sa.Float(), nullable=True),
     sa.Column('admin', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
@@ -62,7 +62,7 @@ def upgrade():
     )
     op.create_table('donation',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('amount', sa.Integer(), nullable=False),
+    sa.Column('amount', sa.Float(), nullable=False),
     sa.Column('donor_id', sa.Integer(), nullable=True),
     sa.Column('charity_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['charity_id'], ['charity.id'], ),
@@ -71,7 +71,7 @@ def upgrade():
     )
     op.create_table('pledge',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('frequency', sa.Time(), nullable=False),
+    sa.Column('frequency', sa.String(), nullable=False),
     sa.Column('start_date', sa.DateTime(), nullable=True),
     sa.Column('end_date', sa.DateTime(), nullable=True),
     sa.Column('amount', sa.Integer(), nullable=False),
