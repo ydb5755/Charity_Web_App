@@ -2,6 +2,7 @@ from app import db
 from flask_login import UserMixin, current_user
 from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, DateTime, Time, Float
 from datetime import datetime, timezone
+import time
 
 
 class Donor(db.Model, UserMixin):
@@ -75,23 +76,58 @@ class Pledge(db.Model):
     charity_id = Column(Integer, ForeignKey('charity.id'))
 
     def process_pledge(self):
+        db.session.add(self)
+        db.session.commit()
         frequency = self.frequency
         start = self.start_date.timestamp().__floor__()
         end = self.end_date.timestamp().__floor__()
         now = datetime.now().timestamp().__floor__()
-        if frequency == 'Second':
-            total = (end-start)*self.amount
-            if total > current_user.current_balance:
-                return 'You dont have enough funds'
-            while start < now < end:
-                now = datetime.now().timestamp().__floor__()
+        while now < end:
+            if start <= now :
+                if frequency == 'Second':
+                    self.donor.current_balance -= self.amount
+                    self.charity.balance += self.amount
+                    time.sleep(1)
+                    now = datetime.now().timestamp().__floor__()
+                elif frequency == 'Minute':
+                    self.donor.current_balance -= self.amount
+                    self.charity.balance += self.amount
+                    time.sleep(60)
+                    now = datetime.now().timestamp().__floor__()
+                elif frequency == 'Hour':
+                    self.donor.current_balance -= self.amount
+                    self.charity.balance += self.amount
+                    time.sleep(3600)
+                    now = datetime.now().timestamp().__floor__()
+                elif frequency == 'Day':
+                    self.donor.current_balance -= self.amount
+                    self.charity.balance += self.amount
+                    time.sleep(86400)
+                    now = datetime.now().timestamp().__floor__()
+                elif frequency == 'Week':
+                    self.donor.current_balance -= self.amount
+                    self.charity.balance += self.amount
+                    time.sleep(604800)
+                    now = datetime.now().timestamp().__floor__()
+                elif frequency == 'Month':
+                    self.donor.current_balance -= self.amount
+                    self.charity.balance += self.amount
+                    self.start_date.year
+                    time.sleep(604800)
+                    now = datetime.now().timestamp().__floor__()
 
-        elif frequency == 'Minute':
-            pass
-        db.session.add(self)
-        db.session.commit()
 
-
+# elif frequency == 'Month':
+#     years = (end_data.year-start_data.year)*12
+#     months = end_data.month-start_data.month
+#     if (end_data.day-start_data.day) < 0 or \
+#     (end_data.day-start_data.day) == 0 and end_data.time() < start_data.time():
+#         months -= 1
+#     total_months = years + months
+#     if total_months <= 0 or\
+#         total_months == 1 and start_data.day > end_data.day or\
+#         total_months == 1 and start_data.day == end_data.day and start_data.time() > end_data.time():
+#         raise ValidationError('You must choose start and end dates that are at least a month apart')
 class Donation(db.Model):
     id         = Column(Integer, primary_key=True)
     amount     = Column(Float, nullable=False)

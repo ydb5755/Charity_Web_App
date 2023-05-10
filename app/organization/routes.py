@@ -55,7 +55,6 @@ def recurring_donation_page(charity_id, donor_id):
         #     charity=charity
         # )
         # pledge.process_pledge()
-        print(dt_start)
         return redirect(url_for('organization.donation_page', charity_id=charity.id, donor_id=donor.id))
     print(rd_form.errors)
     return render_template('recurring_donation_page.html',
