@@ -44,8 +44,8 @@ def recurring_donation_page(charity_id, donor_id):
     donor = Donor.query.filter_by(id=donor_id).first()
     rd_form = RecurringDonationForm()
     if rd_form.validate_on_submit():
-        dt_start = rd_form.start.data.replace(tzinfo=timezone.utc).timestamp()
-        dt_end = rd_form.end.data.replace(tzinfo=timezone.utc).timestamp()
+        dt_start = rd_form.start.data.timestamp()
+        dt_end = rd_form.end.data.timestamp()
         # pledge = Pledge(
         #     frequency=rd_form.how_often.data,
         #     start_date=datetime(dt_start),
@@ -57,6 +57,7 @@ def recurring_donation_page(charity_id, donor_id):
         # pledge.process_pledge()
         print(dt_start)
         return redirect(url_for('organization.donation_page', charity_id=charity.id, donor_id=donor.id))
+    print(rd_form.errors)
     return render_template('recurring_donation_page.html',
                            charity=charity,
                            donor=donor,

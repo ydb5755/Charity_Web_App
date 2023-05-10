@@ -1,6 +1,7 @@
 from app import db
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, DateTime, Time
+from datetime import datetime, timezone
 
 
 class Donor(db.Model, UserMixin):
@@ -54,6 +55,16 @@ class Receipt(db.Model):
     charity_id = Column(Integer, ForeignKey('charity.id'))
 
 
+times = {
+    'Second':1,
+    'Minute':60,
+    'Hour':3600,
+    'Day':1,
+    'Week':7,
+    'Month':1
+}
+
+
 class Pledge(db.Model):
     id         = Column(Integer, primary_key=True)
     frequency  = Column(String, nullable=False)
@@ -64,6 +75,19 @@ class Pledge(db.Model):
     charity_id = Column(Integer, ForeignKey('charity.id'))
 
     def process_pledge(self):
+        frequency = self.frequency
+        start = self.start_date.timestamp().__floor__()
+        end = self.end_date.timestamp().__floor__()
+        now = datetime.now().timestamp().__floor__()
+        if frequency == 'Second':
+            total = (end-start)*self.amount
+            if total > current_user.current_balance:
+                return 'You dont have enough funds'
+            while start < now < end:
+                now = datetime.now().timestamp().__floor__()
+
+        elif frequency == 'Minute':
+            pass
         db.session.add(self)
         db.session.commit()
 

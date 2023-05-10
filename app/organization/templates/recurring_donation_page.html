@@ -11,15 +11,24 @@
 
     {{ rd_form.amount.label }}
     {{ rd_form.amount() }}<br/>
+    {% for error in rd_form.amount.errors %}
+        <p>{{ error }}</p>
+    {% endfor %}
 
     {{ rd_form.how_often.label }}
     {{ rd_form.how_often() }}<br/>
+    {% for error in rd_form.how_often.errors %}
+        <p>{{ error }}</p>
+    {% endfor %}
 
     {{ rd_form.start.label }}
     {{ rd_form.start() }}<br/>
 
     {{ rd_form.end.label }}
     {{ rd_form.end() }}<br/>
+    {% for error in rd_form.end.errors %}
+        <p>{{ error }}</p>
+    {% endfor %}
 
     {{ rd_form.submit() }}<br/>
 </form>
