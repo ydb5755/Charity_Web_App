@@ -60,9 +60,8 @@ times = {
     'Second':1,
     'Minute':60,
     'Hour':3600,
-    'Day':1,
-    'Week':7,
-    'Month':1
+    'Day':86400,
+    'Week':604800
 }
 
 
@@ -84,38 +83,42 @@ class Pledge(db.Model):
         now = datetime.now().timestamp().__floor__()
         while now < end:
             if start <= now :
-                if frequency == 'Second':
-                    self.donor.current_balance -= self.amount
-                    self.charity.balance += self.amount
-                    time.sleep(1)
-                    now = datetime.now().timestamp().__floor__()
-                elif frequency == 'Minute':
-                    self.donor.current_balance -= self.amount
-                    self.charity.balance += self.amount
-                    time.sleep(60)
-                    now = datetime.now().timestamp().__floor__()
-                elif frequency == 'Hour':
-                    self.donor.current_balance -= self.amount
-                    self.charity.balance += self.amount
-                    time.sleep(3600)
-                    now = datetime.now().timestamp().__floor__()
-                elif frequency == 'Day':
-                    self.donor.current_balance -= self.amount
-                    self.charity.balance += self.amount
-                    time.sleep(86400)
-                    now = datetime.now().timestamp().__floor__()
-                elif frequency == 'Week':
-                    self.donor.current_balance -= self.amount
-                    self.charity.balance += self.amount
-                    time.sleep(604800)
-                    now = datetime.now().timestamp().__floor__()
-                elif frequency == 'Month':
+                if frequency == 'Month':
                     self.donor.current_balance -= self.amount
                     self.charity.balance += self.amount
                     self.start_date.year
-                    time.sleep(604800)
+                    time.sleep(1)
                     now = datetime.now().timestamp().__floor__()
-
+                else:
+                    self.donor.current_balance -= self.amount
+                    self.charity.balance += self.amount
+                    time.sleep(times.get(frequency))
+                    now = datetime.now().timestamp().__floor__()
+                # if frequency == 'Second':
+                #     self.donor.current_balance -= self.amount
+                #     self.charity.balance += self.amount
+                #     time.sleep(1)
+                #     now = datetime.now().timestamp().__floor__()
+                # elif frequency == 'Minute':
+                #     self.donor.current_balance -= self.amount
+                #     self.charity.balance += self.amount
+                #     time.sleep(60)
+                #     now = datetime.now().timestamp().__floor__()
+                # elif frequency == 'Hour':
+                #     self.donor.current_balance -= self.amount
+                #     self.charity.balance += self.amount
+                #     time.sleep(3600)
+                #     now = datetime.now().timestamp().__floor__()
+                # elif frequency == 'Day':
+                #     self.donor.current_balance -= self.amount
+                #     self.charity.balance += self.amount
+                #     time.sleep(86400)
+                #     now = datetime.now().timestamp().__floor__()
+                # elif frequency == 'Week':
+                #     self.donor.current_balance -= self.amount
+                #     self.charity.balance += self.amount
+                #     time.sleep(604800)
+                #     now = datetime.now().timestamp().__floor__()
 
 # elif frequency == 'Month':
 #     years = (end_data.year-start_data.year)*12

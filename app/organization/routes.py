@@ -46,15 +46,15 @@ def recurring_donation_page(charity_id, donor_id):
     if rd_form.validate_on_submit():
         dt_start = rd_form.start.data.timestamp()
         dt_end = rd_form.end.data.timestamp()
-        # pledge = Pledge(
-        #     frequency=rd_form.how_often.data,
-        #     start_date=datetime(dt_start),
-        #     end_date=datetime(dt_end),
-        #     amount=rd_form.amount.data,
-        #     donor=donor,
-        #     charity=charity
-        # )
-        # pledge.process_pledge()
+        pledge = Pledge(
+            frequency=rd_form.how_often.data,
+            start_date=datetime(dt_start), # Something over here needs looking over... 'TypeError: 'float' object cannot be interpreted as an integer'
+            end_date=datetime(dt_end),
+            amount=rd_form.amount.data,
+            donor=donor,
+            charity=charity
+        )
+        pledge.process_pledge()
         return redirect(url_for('organization.donation_page', charity_id=charity.id, donor_id=donor.id))
     print(rd_form.errors)
     return render_template('recurring_donation_page.html',
