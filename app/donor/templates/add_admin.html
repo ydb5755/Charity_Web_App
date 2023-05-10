@@ -1,0 +1,17 @@
+{% extends 'partials/base.html' %}
+{% block title %}Profile Page{% endblock title %}
+{% block content %}
+    <form method="post" enctype="multipart/form-data">
+        {{ add_admin_form.hidden_tag() }}
+
+        {{ add_admin_form.id.label }}
+        {{ add_admin_form.id() }}<br/>
+        {% for error in add_admin_form.id.errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+
+        {{ add_admin_form.submit() }}
+    </form>
+{% endblock content %}
+
+
