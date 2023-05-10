@@ -19,6 +19,9 @@
 
             {{ add_funds_form.amount.label }}
             {{ add_funds_form.amount() }}<br/>
+            {% for error in add_funds_form.amount.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
 
             {{ add_funds_form.submit() }}
         </form>

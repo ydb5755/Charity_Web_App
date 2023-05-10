@@ -6,6 +6,7 @@ from app.donor.forms import AddAdmin, RemoveAdmin, AddFunds
 from app import db
 
 is_donor = isinstance(current_user, Donor)
+
 @donor.route('/profile/<donor_id>', methods=('GET', 'POST'))
 @login_required
 def profile_page(donor_id):
@@ -19,7 +20,6 @@ def profile_page(donor_id):
         db.session.commit()
         flash('Funds added!')
         return redirect(url_for('donor.profile_page', donor_id=current_user.id))
-    print(add_funds_form.errors)
     return render_template('profile.html',
                            donor=donor,
                            charities_to_be_confirmed=charities_to_be_confirmed,

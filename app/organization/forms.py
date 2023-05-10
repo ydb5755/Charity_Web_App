@@ -40,11 +40,13 @@ class RecurringDonationForm(FlaskForm):
             raise ValidationError('Your end date is earlier than the start. Please choose appropriate dates')
         
     def validate_how_often(form, field):
-        start = form.start.data.timestamp().__floor__()
-        end = form.end.data.timestamp().__floor__()
+        start_data = form.start.data
+        end_data = form.end.data
+        start = start_data.timestamp().__floor__()
+        end = end_data.timestamp().__floor__()
         frequency = form.how_often.data
         total_time = end-start
-        if form.start.data.year >= form.end.data.year:
+        if start_data.year > end_data.year:
             raise ValidationError('Check your years')
         if frequency == 'Minute' or frequency == 'Second':
             if total_time < 60:
@@ -59,13 +61,23 @@ class RecurringDonationForm(FlaskForm):
             if total_time < 604800:
                 raise ValidationError('You must choose start and end dates that are at least a week apart')
         elif frequency == 'Month':
-            if form.start.data.month >= form.end.data.month:
+            years = (end_data.year-start_data.year)*12
+            months = end_data.month-start_data.month
+            if (end_data.day-start_data.day) < 0 or \
+            (end_data.day-start_data.day) == 0 and end_data.time() < start_data.time():
+                months -= 1
+            total_months = years + months
+            if total_months <= 0 or\
+                total_months == 1 and start_data.day > end_data.day or\
+                total_months == 1 and start_data.day == end_data.day and start_data.time() > end_data.time():
                 raise ValidationError('You must choose start and end dates that are at least a month apart')
-
+            if total_months > 12:
+                raise ValidationError('We do not accept recurring donations longer than 12 months. \
+                                      If you would like to make a longer recurring donation please choose a recurring donation with no end and cancel it when you like')
         else:
             raise ValidationError('Something went wrong with the selection, please try again or try choosing another frequency')
 
-                # 2023-05-01 to 2022-04-31 == GOOD
+                 
 
         
     def validate_amount(form, field):
@@ -99,7 +111,8 @@ class RecurringDonationForm(FlaskForm):
         elif frequency == 'Month':
             years = (form.end.data.year-form.start.data.year)*12
             months = form.end.data.month-form.start.data.month
-            if (form.end.data.day-form.start.data.day) < 0:
+            if (form.end.data.day-form.start.data.day) < 0 or \
+                (form.end.data.day-form.start.data.day) == 0 and form.end.data.time() < form.start.data.time():
                 months -= 1
             total_months = years + months
             if current_user.current_balance < total_months*amount:
