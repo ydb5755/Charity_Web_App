@@ -42,6 +42,14 @@ class RecurringDonationForm(FlaskForm):
         if end < datetime.now().timestamp().__floor__():
             raise ValidationError('Your end date is in the past, please choose future dates')
         
+    def validate_start(form, field):
+        start = form.start.data.timestamp().__floor__()
+        end = field.data.timestamp().__floor__()
+        if start > end:
+            raise ValidationError('Your end date is earlier than the start. Please choose appropriate dates')
+        if start < datetime.now().timestamp().__floor__():
+            raise ValidationError('Your start date is in the past, please choose future dates')
+        
     def validate_how_often(form, field):
         start_data = form.start.data
         end_data = form.end.data

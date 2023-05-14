@@ -23,6 +23,9 @@
 
     {{ rd_form.start.label }}
     {{ rd_form.start() }}<br/>
+    {% for error in rd_form.start.errors %}
+        <p>{{ error }}</p>
+    {% endfor %}
 
     {{ rd_form.end.label }}
     {{ rd_form.end() }}<br/>
