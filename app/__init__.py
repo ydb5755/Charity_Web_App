@@ -4,12 +4,18 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from app.config import Config
-
+from apscheduler.schedulers.background import BackgroundScheduler, BlockingScheduler
+import atexit
+from threading import Thread
+from datetime import datetime
+from flask_apscheduler import APScheduler
 
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
 mail = Mail()
+scheduler = APScheduler()
+
 
 
 def create_app():
@@ -19,6 +25,8 @@ def create_app():
     migrate.init_app(app,db)
     login_manager.init_app(app)
     mail.init_app(app)
+    scheduler.init_app(app)
+    scheduler.start()
     from app.models import Donor, Charity
 
     @login_manager.user_loader
@@ -38,5 +46,6 @@ def create_app():
     app.register_blueprint(main)
     app.register_blueprint(donor)
     app.register_blueprint(organization)
+
 
     return app

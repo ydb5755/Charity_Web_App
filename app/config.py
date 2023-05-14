@@ -9,3 +9,4 @@ class Config():
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get('EMAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+    SCHEDULER_API_ENABLED = True

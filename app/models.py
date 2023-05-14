@@ -1,4 +1,5 @@
 from app import db
+from flask import current_app
 from flask_login import UserMixin, current_user
 from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, DateTime, Time, Float
 from datetime import datetime, timezone
@@ -56,15 +57,6 @@ class Receipt(db.Model):
     charity_id = Column(Integer, ForeignKey('charity.id'))
 
 
-times = {
-    'Second':1,
-    'Minute':60,
-    'Hour':3600,
-    'Day':86400,
-    'Week':604800
-}
-
-
 class Pledge(db.Model):
     id         = Column(Integer, primary_key=True)
     frequency  = Column(String, nullable=False)
@@ -77,23 +69,60 @@ class Pledge(db.Model):
     def process_pledge(self):
         db.session.add(self)
         db.session.commit()
-        frequency = self.frequency
-        start = self.start_date.timestamp().__floor__()
-        end = self.end_date.timestamp().__floor__()
-        now = datetime.now().timestamp().__floor__()
-        while now < end:
-            if start <= now :
-                if frequency == 'Month':
-                    self.donor.current_balance -= self.amount
-                    self.charity.balance += self.amount
-                    self.start_date.year
-                    time.sleep(1)
-                    now = datetime.now().timestamp().__floor__()
-                else:
-                    self.donor.current_balance -= self.amount
-                    self.charity.balance += self.amount
-                    time.sleep(times.get(frequency))
-                    now = datetime.now().timestamp().__floor__()
+
+
+class Donation(db.Model):
+    id         = Column(Integer, primary_key=True)
+    amount     = Column(Float, nullable=False)
+    donor_id   = Column(Integer, ForeignKey('donor.id'))
+    charity_id = Column(Integer, ForeignKey('charity.id'))
+
+    def process_donation(self):
+        self.donor.current_balance -= self.amount
+        self.charity.balance += self.amount
+        db.session.add(self)
+        db.session.commit()
+
+
+
+
+
+# while True:
+#     current_time = datetime.now().timestamp().__floor__()
+#     time.sleep(1)
+#     if current_time == datetime.max:
+#         break
+
+
+# current_pledges = []
+
+        # frequency = self.frequency
+        # start = self.start_date.timestamp().__floor__()
+        # end = self.end_date.timestamp().__floor__()
+        # now = datetime.now().timestamp().__floor__()
+        # while now < end:
+        #     if start <= now :
+        #         if frequency == 'Month':
+        #             self.donor.current_balance -= self.amount
+        #             self.charity.balance += self.amount
+        #             db.session.commit()
+        #             self.start_date.year
+        #             time.sleep(1)
+        #             now = datetime.now().timestamp().__floor__()
+        #             continue
+        #         else:
+        #             print(times.get(frequency))
+        #             self.donor.current_balance -= self.amount
+        #             self.charity.balance += self.amount
+        #             db.session.commit()
+        #             time.sleep(times.get(frequency))
+        #             now = datetime.now().timestamp().__floor__()
+        #             continue
+        #     time.sleep(1)
+        #     now = datetime.now().timestamp().__floor__()
+
+
+
                 # if frequency == 'Second':
                 #     self.donor.current_balance -= self.amount
                 #     self.charity.balance += self.amount
@@ -131,14 +160,3 @@ class Pledge(db.Model):
 #         total_months == 1 and start_data.day > end_data.day or\
 #         total_months == 1 and start_data.day == end_data.day and start_data.time() > end_data.time():
 #         raise ValidationError('You must choose start and end dates that are at least a month apart')
-class Donation(db.Model):
-    id         = Column(Integer, primary_key=True)
-    amount     = Column(Float, nullable=False)
-    donor_id   = Column(Integer, ForeignKey('donor.id'))
-    charity_id = Column(Integer, ForeignKey('charity.id'))
-
-    def process_donation(self):
-        self.donor.current_balance -= float(self.amount)
-        self.charity.balance += float(self.amount)
-        db.session.add(self)
-        db.session.commit()

@@ -13,6 +13,7 @@ from wtforms import StringField,\
                     DecimalField
 from wtforms.validators import DataRequired, ValidationError, NumberRange
 from flask_login import current_user
+from datetime import datetime
 
 
 class SingleDonationForm(FlaskForm):
@@ -38,6 +39,8 @@ class RecurringDonationForm(FlaskForm):
         end = field.data.timestamp().__floor__()
         if start > end:
             raise ValidationError('Your end date is earlier than the start. Please choose appropriate dates')
+        if end < datetime.now().timestamp().__floor__():
+            raise ValidationError('Your end date is in the past, please choose future dates')
         
     def validate_how_often(form, field):
         start_data = form.start.data
