@@ -5,11 +5,11 @@ from flask_login import current_user, login_required
 from app.donor.forms import AddAdmin, RemoveAdmin, AddFunds
 from app import db
 
-is_donor = isinstance(current_user, Donor)
 
 @donor.route('/profile/<donor_id>', methods=('GET', 'POST'))
 @login_required
 def profile_page(donor_id):
+    is_donor = isinstance(current_user, Donor)
     if not int(current_user.id) == int(donor_id):
         return redirect(url_for('main.home'))
     donor = Donor.query.filter_by(id=donor_id).first()
@@ -49,8 +49,7 @@ def remove_admin():
         return redirect(url_for('main.home'))
     remove_admin_form = RemoveAdmin()
     admins = Donor.query.filter_by(admin=True).all()
-    print(admins)
-    remove_admin_form.admin.choices = [user.email for user in admins]  #.remove(Donor.query.filter_by(id=1).first())
+    remove_admin_form.admin.choices = [user.email for user in admins].remove(Donor.query.filter_by(id=1).first().email)
     if remove_admin_form.validate_on_submit():
         user = Donor.query.filter_by(email=remove_admin_form.admin.data).first()
         user.admin = False

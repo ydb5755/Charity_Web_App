@@ -64,7 +64,6 @@ def recurring_donation_page(charity_id, donor_id):
 
 def pledge_transaction(pledge_id):
     with scheduler.app.app_context():
-        print(f'running')
         pledge = Pledge.query.filter_by(id=pledge_id).first()
         if datetime.now() > pledge.end_date:
             return scheduler.remove_job(str(pledge.id))
@@ -76,7 +75,6 @@ def pledge_transaction(pledge_id):
 
 def pledge_start_date(pledge_id):
     with scheduler.app.app_context():
-        print(pledge_id)
         pledge = Pledge.query.filter_by(id=pledge_id).first()
         frequency = pledge.frequency
         if frequency == 'Month':
@@ -100,7 +98,6 @@ def processing_recurring_donations(charity_id, donor_id, pledge_id):
     charity = Charity.query.filter_by(id=charity_id).first()
     donor = Donor.query.filter_by(id=donor_id).first()
     pledge = Pledge.query.filter_by(id=pledge_id).first()
-    frequency = pledge.frequency
     scheduler.add_job(id=pledge_id, func=pledge_start_date, args=(pledge.id, ), trigger='date', run_date=pledge.start_date)
     return redirect(url_for('organization.donation_page', charity_id=charity.id, donor_id=donor.id))
 
