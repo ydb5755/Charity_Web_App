@@ -23,7 +23,7 @@ class SingleDonationForm(FlaskForm):
     def validate_amount(form, field):
         if field.data < .01:
             raise ValidationError('Amount should be at least .01')
-        if current_user.current_balance < field.data:
+        if current_user.balance < field.data:
             raise ValidationError('You do not have enough funds to make this donation')
         
 
@@ -101,23 +101,23 @@ class RecurringDonationForm(FlaskForm):
             raise ValidationError('Amount must be at least .01')
         if frequency == 'Second':
             total = total_time*amount
-            if current_user.current_balance < total:
+            if current_user.balance < total:
                 raise ValidationError('You do not have enough funds to make this pledge')
         elif frequency == 'Minute':
             total = (total_time/60)*amount
-            if current_user.current_balance < total:
+            if current_user.balance < total:
                 raise ValidationError('You do not have enough funds to make this pledge')
         elif frequency == 'Hour':
             total = (total_time/3600)*amount
-            if current_user.current_balance < total:
+            if current_user.balance < total:
                 raise ValidationError('You do not have enough funds to make this pledge')
         elif frequency == 'Day':
             total = (total_time/86400)*amount
-            if current_user.current_balance < total:
+            if current_user.balance < total:
                 raise ValidationError('You do not have enough funds to make this pledge')
         elif frequency == 'Week':
             total = (total_time/604800)*amount
-            if current_user.current_balance < total:
+            if current_user.balance < total:
                 raise ValidationError('You do not have enough funds to make this pledge')
         elif frequency == 'Month':
             years = (form.end.data.year-form.start.data.year)*12
@@ -126,7 +126,7 @@ class RecurringDonationForm(FlaskForm):
                 (form.end.data.day-form.start.data.day) == 0 and form.end.data.time() < form.start.data.time():
                 months -= 1
             total_months = years + months
-            if current_user.current_balance < total_months*amount:
+            if current_user.balance < total_months*amount:
                 raise ValidationError('You do not have enough funds to make this pledge')
         else:
             raise ValidationError('Something went wrong with the selection, please try again or try choosing another frequency')

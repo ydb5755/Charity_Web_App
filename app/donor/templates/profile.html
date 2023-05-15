@@ -11,7 +11,7 @@
         <a href="{{ url_for('donor.add_admin') }}">Add Admin</a><br/>
         <a href="{{ url_for('donor.remove_admin') }}">Remove Admin</a><br/>
     {% endif %}
-    <h3>Current Funds: {{ current_user.current_balance }}</h3>
+    <h3>Current Funds: {{ current_user.balance }}</h3>
     {% if is_donor %}
         <h3>Add Funds</h3><br/>
         <form method="post" enctype="multipart/form-data">

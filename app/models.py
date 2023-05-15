@@ -19,7 +19,7 @@ class Donor(db.Model, UserMixin):
     bank            = Column(String(64))
     account_number  = Column(String(64))
     name_on_account = Column(String(64))
-    current_balance = Column(Float, default=0)
+    balance         = Column(Float, default=0)
     auto_replenish  = Column(Boolean, default=False)
     daily_pledges   = Column(Float, default=0)
     admin           = Column(Boolean, default=False)
@@ -78,7 +78,7 @@ class Donation(db.Model):
     charity_id = Column(Integer, ForeignKey('charity.id'))
 
     def process_donation(self):
-        self.donor.current_balance -= self.amount
+        self.donor.balance -= self.amount
         self.charity.balance += self.amount
         db.session.add(self)
         db.session.commit()
@@ -103,7 +103,7 @@ class Donation(db.Model):
         # while now < end:
         #     if start <= now :
         #         if frequency == 'Month':
-        #             self.donor.current_balance -= self.amount
+        #             self.donor.balance -= self.amount
         #             self.charity.balance += self.amount
         #             db.session.commit()
         #             self.start_date.year
@@ -112,7 +112,7 @@ class Donation(db.Model):
         #             continue
         #         else:
         #             print(times.get(frequency))
-        #             self.donor.current_balance -= self.amount
+        #             self.donor.balance -= self.amount
         #             self.charity.balance += self.amount
         #             db.session.commit()
         #             time.sleep(times.get(frequency))
@@ -124,27 +124,27 @@ class Donation(db.Model):
 
 
                 # if frequency == 'Second':
-                #     self.donor.current_balance -= self.amount
+                #     self.donor.balance -= self.amount
                 #     self.charity.balance += self.amount
                 #     time.sleep(1)
                 #     now = datetime.now().timestamp().__floor__()
                 # elif frequency == 'Minute':
-                #     self.donor.current_balance -= self.amount
+                #     self.donor.balance -= self.amount
                 #     self.charity.balance += self.amount
                 #     time.sleep(60)
                 #     now = datetime.now().timestamp().__floor__()
                 # elif frequency == 'Hour':
-                #     self.donor.current_balance -= self.amount
+                #     self.donor.balance -= self.amount
                 #     self.charity.balance += self.amount
                 #     time.sleep(3600)
                 #     now = datetime.now().timestamp().__floor__()
                 # elif frequency == 'Day':
-                #     self.donor.current_balance -= self.amount
+                #     self.donor.balance -= self.amount
                 #     self.charity.balance += self.amount
                 #     time.sleep(86400)
                 #     now = datetime.now().timestamp().__floor__()
                 # elif frequency == 'Week':
-                #     self.donor.current_balance -= self.amount
+                #     self.donor.balance -= self.amount
                 #     self.charity.balance += self.amount
                 #     time.sleep(604800)
                 #     now = datetime.now().timestamp().__floor__()

@@ -68,7 +68,7 @@ def pledge_transaction(pledge_id):
         if datetime.now() > pledge.end_date:
             return scheduler.remove_job(str(pledge.id))
         if datetime.now() > pledge.start_date:
-            pledge.donor.current_balance -= pledge.amount
+            pledge.donor.balance -= pledge.amount
             pledge.charity.balance += pledge.amount
             db.session.commit()
 
@@ -145,7 +145,7 @@ def one_time_donation_page(charity_id, donor_id):
     # while now <= end:
     #     if start <= now :
     #         if frequency == 'Month':
-    #             pledge.donor.current_balance -= pledge.amount
+    #             pledge.donor.balance -= pledge.amount
     #             pledge.charity.balance += pledge.amount
     #             db.session.commit()
     #             pledge.start_date.year
@@ -154,7 +154,7 @@ def one_time_donation_page(charity_id, donor_id):
     #             continue
     #         else:
     #             print(times.get(frequency))
-    #             pledge.donor.current_balance -= pledge.amount
+    #             pledge.donor.balance -= pledge.amount
     #             pledge.charity.balance += pledge.amount
     #             db.session.commit()
     #             time.sleep(times.get(frequency))

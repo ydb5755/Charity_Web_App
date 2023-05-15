@@ -16,7 +16,7 @@ def profile_page(donor_id):
     charities_to_be_confirmed = Charity.query.filter_by(authenticated=False)
     add_funds_form = AddFunds()
     if add_funds_form.validate_on_submit():
-        donor.current_balance += float(add_funds_form.amount.data)
+        donor.balance += float(add_funds_form.amount.data)
         db.session.commit()
         flash('Funds added!')
         return redirect(url_for('donor.profile_page', donor_id=current_user.id))

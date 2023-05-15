@@ -52,7 +52,7 @@ def upgrade():
     sa.Column('bank', sa.String(length=64), nullable=True),
     sa.Column('account_number', sa.String(length=64), nullable=True),
     sa.Column('name_on_account', sa.String(length=64), nullable=True),
-    sa.Column('current_balance', sa.Float(), nullable=True),
+    sa.Column('balance', sa.Float(), nullable=True),
     sa.Column('auto_replenish', sa.Boolean(), nullable=True),
     sa.Column('daily_pledges', sa.Float(), nullable=True),
     sa.Column('admin', sa.Boolean(), nullable=True),
