@@ -11,10 +11,12 @@ from datetime import datetime
 
 @organization.route('/charity_page/<charity_id>')
 @login_required
-def charity_page(charity_id):
+def charity_page(charity_id): 
+    is_charity = isinstance(current_user, Charity)
     charity = Charity.query.filter_by(id=charity_id).first()
     return render_template('charity_page.html',
-                           charity=charity)
+                           charity=charity,
+                           is_charity=is_charity)
 
 @organization.route('/authenticate_charity/<charity_id>', methods=('GET', 'POST'))
 @login_required
@@ -115,6 +117,7 @@ def one_time_donation_page(charity_id, donor_id):
             charity=charity
         )
         donation.process_donation()
+        flash('Donation made succesfully!')
         return redirect(url_for('organization.donation_page', charity_id=charity.id, donor_id=donor.id))
     return render_template('one_time_donation_page.html',
                            charity=charity,

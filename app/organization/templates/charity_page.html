@@ -1,8 +1,11 @@
-{% extends 'partials/base.html' %}
+{% extends 'base.html' %}
 {% block title %}Charity Page{% endblock title %}
 {% block content %}
 
-{% with charity=charity %}
-    <h1>Donate <a href="{{ url_for('organization.donation_page', charity_id=charity.id, donor_id=current_user.id) }}">Here</a></h1>
-{% endwith %}
+{% if not is_charity %}
+    {% with charity=charity %}
+        <h1>Donate <a href="{{ url_for('organization.donation_page', charity_id=charity.id, donor_id=current_user.id) }}">Here</a></h1>
+    {% endwith %}
+{% endif %}
+
 {% endblock content %}
