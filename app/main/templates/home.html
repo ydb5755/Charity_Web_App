@@ -1,12 +1,25 @@
 {% extends "base.html" %}
 {% block title %}Homepage{% endblock title %}
 {% block content %}
-    {% for charity in all_charities %}
-        {% if charity.authenticated == True %}
-            <div class="card">
-                <a href="{{ url_for('organization.charity_page', charity_id=charity.id) }}">{{ charity.charity_name }}</a>
-            </div>
-        {% endif %}
-    {% endfor %}
+    <div class="home_landing">
+        Welcome to Charity Page!
+    </div>
+    <div class="card-container">
+        {% for charity in all_charities %}
+            {% if charity.authenticated == True %}
+                <div class="card">
+                    <div class="card-header">
+                        {{ charity.charity_name }}
+                    </div>
+                    <div class="card-body">
+                        {{ charity.description }}
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('organization.charity_page', charity_id=charity.id) }}">Donate Now!</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
     <br/>
 {% endblock content %}

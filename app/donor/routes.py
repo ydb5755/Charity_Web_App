@@ -13,7 +13,6 @@ def profile_page(donor_id):
     if not int(current_user.id) == int(donor_id):
         return redirect(url_for('main.home'))
     donor = Donor.query.filter_by(id=donor_id).first()
-    charities_to_be_confirmed = Charity.query.filter_by(authenticated=False)
     add_funds_form = AddFunds()
     if add_funds_form.validate_on_submit():
         donor.balance += float(add_funds_form.amount.data)
@@ -22,9 +21,17 @@ def profile_page(donor_id):
         return redirect(url_for('donor.profile_page', donor_id=current_user.id))
     return render_template('profile.html',
                            donor=donor,
-                           charities_to_be_confirmed=charities_to_be_confirmed,
                            add_funds_form=add_funds_form,
                            is_donor=is_donor)
+
+
+@donor.route('authenticate_charity', methods=('GET', 'POST'))
+@login_required
+def authenticate_charity():
+    charities_to_be_confirmed = Charity.query.filter_by(authenticated=False).all()
+    return render_template('authenticate_charity.html',
+                           charities_to_be_confirmed=charities_to_be_confirmed)
+
 
 @donor.route('/add_admin', methods=('GET', 'POST'))
 @login_required

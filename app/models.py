@@ -1,7 +1,7 @@
 from app import db
 from flask import current_app
 from flask_login import UserMixin, current_user
-from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, DateTime, Time, Float
+from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, DateTime, Time, Float, Text
 from datetime import datetime, timezone
 import time
 
@@ -43,6 +43,7 @@ class Charity(db.Model, UserMixin):
     bank             = Column(String(64), nullable=False)
     account_number   = Column(String(64), nullable=False)
     balance          = Column(Float, default=0)
+    description      = Column(Text, default='')
     authenticated    = Column(Boolean, default=False)
     receipts         = db.relationship('Receipt', backref='charity', lazy='dynamic')
     pledges         = db.relationship('Pledge', backref='charity', lazy='dynamic')

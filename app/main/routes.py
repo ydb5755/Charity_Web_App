@@ -14,6 +14,12 @@ def home():
     return render_template('home.html', 
                            all_charities=all_charities)
 
+
+@main.route('/about')
+def about():
+    return render_template('about.html')
+
+
 @main.route('/login', methods=('GET', 'POST'))
 def login():
     if current_user.is_authenticated:

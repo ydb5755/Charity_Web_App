@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Authenticate Charity{% endblock title %}
+{% block content %}
+    <div class="card-container">
+        {% if not charities_to_be_confirmed %}
+            <h1>There are no charities to be confirmed</h1>
+        {% else %}
+            {% if current_user.admin == True %}
+                {% for charity in charities_to_be_confirmed %}
+                    <p>Authenticate {{ charity.charity_name }} by clicking <a href="{{ url_for('organization.authenticate', charity_id=charity.id) }}">here</a></p>
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock content %}
+

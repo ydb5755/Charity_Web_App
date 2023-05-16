@@ -9,15 +9,26 @@
 </head>
 <body>
     <header>
+        <h2>Charity Page</h2>
         <nav>
-            <a href="{{ url_for('main.home') }}">Home</a>
-            {% if current_user.is_authenticated %}
-                <a href="{{ url_for('main.logout') }}">Logout</a>
-                <a href="{{ url_for('donor.profile_page', donor_id=current_user.id) }}">Profile</a>
-            {% else %}
-                <a href="{{ url_for('main.login') }}">Login</a>
-                <a href="{{ url_for('main.signup') }}">Sign Up</a>
-            {% endif %}
+            <ul>
+                <li><a href="{{ url_for('main.home') }}">Home</a></li>
+                <li><a href="{{ url_for('main.about') }}">About</a></li>
+                {% if current_user.id == 1 %}
+                    <li><a href="{{ url_for('donor.add_admin') }}">Add Admin</a></li>
+                    <li><a href="{{ url_for('donor.remove_admin') }}">Remove Admin</a></li>
+                {% endif %}
+                {% if current_user.admin == True %}
+                    <li><a href="{{ url_for('donor.authenticate_charity') }}">Authenticate Charity</a></li>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+                    <li><a href="{{ url_for('donor.profile_page', donor_id=current_user.id) }}">Profile</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('main.login') }}">Login</a></li>
+                    <li><a href="{{ url_for('main.signup') }}">Sign Up</a></li>
+                {% endif %}
+            </ul>
 
         </nav>
     </header>
