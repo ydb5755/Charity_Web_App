@@ -28,13 +28,15 @@ class SingleDonationForm(FlaskForm):
         
 
 class RecurringDonationForm(FlaskForm):
-    amount = StringField('How much would you like to donate?')
-    how_often = SelectField('How often would you like to make this payment?', choices=['Second', 'Minute', 'Hour', 'Day', 'Week', 'Month'])
-    start = DateTimeLocalField('When should the payments start?', format='%Y-%m-%dT%H:%M')
-    end = DateTimeLocalField('When should the payments end?', format='%Y-%m-%dT%H:%M')
-    submit = SubmitField('Donate')
+    amount = StringField('Amount:')
+    how_often = SelectField('Frequency:', choices=['Second', 'Minute', 'Hour', 'Day', 'Week', 'Month'])
+    start = DateTimeLocalField('Start:', format='%Y-%m-%dT%H:%M')
+    end = DateTimeLocalField('End:', format='%Y-%m-%dT%H:%M')
+    submit = SubmitField('Donate!')
 
     def validate_end(form, field):
+        if form.start.data is None or  form.end.data is None:
+            raise ValidationError('Please enter a start and end time')
         start = form.start.data.timestamp().__floor__()
         end = field.data.timestamp().__floor__()
         if start > end:
@@ -43,6 +45,8 @@ class RecurringDonationForm(FlaskForm):
             raise ValidationError('Your end date is in the past, please choose future dates')
         
     def validate_start(form, field):
+        if form.start.data is None or  form.end.data is None:
+            raise ValidationError('Please enter a start and end time')
         start = form.start.data.timestamp().__floor__()
         end = field.data.timestamp().__floor__()
         if start > end:
@@ -51,6 +55,8 @@ class RecurringDonationForm(FlaskForm):
             raise ValidationError('Your start date is in the past, please choose future dates')
         
     def validate_how_often(form, field):
+        if form.start.data is None or  form.end.data is None:
+            raise ValidationError('Please enter a start and end time')
         start_data = form.start.data
         end_data = form.end.data
         start = start_data.timestamp().__floor__()
@@ -92,6 +98,8 @@ class RecurringDonationForm(FlaskForm):
 
         
     def validate_amount(form, field):
+        if form.start.data is None or  form.end.data is None:
+            raise ValidationError('Please enter a start and end time')
         start = form.start.data.timestamp().__floor__()
         end = form.end.data.timestamp().__floor__()
         total_time = end-start
