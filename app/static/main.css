@@ -7,13 +7,19 @@
     font-family: "Montserrat", sans-serif;
 }
 
+body {
+    background: #EFEFEF;
+}
+
 a {
     font-weight: 500;
     font-size: 16px;
     text-decoration: none;
     list-style: none;
     padding: 0px 10px;
+    color: purple
 }
+
 header {
     display: flex;
     justify-content: space-between;
@@ -24,4 +30,148 @@ header {
 
 nav li {
     display: inline-block;
+}
+
+.home-landing {
+    width:auto;
+    height:50vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-text {
+    width: 30%;
+    min-width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-spacer {
+    width: 70%;
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.card {
+    padding: 1rem;
+    margin: 2%;
+    width: 300px;
+    height: 270px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .3);
+    border-radius: .25rem;
+    
+}
+
+.card-header {
+    font-size: 2rem;
+    margin-bottom: .5rem;
+    text-align: center;
+}
+
+.card-body {
+    overflow: hidden;
+}
+
+.card-footer {
+    margin-top: auto;
+    margin-bottom: 10px;
+    text-align: center;
+
+}
+
+.card-auth {
+    height: 200px;
+    width: 250px;
+}
+
+.btn-donate {
+    border:none;
+    background: hsl(200, 50%, 50%);
+    color: white;
+    border-radius: .25em;
+    padding: .5em .75em;
+}
+
+.btn-donate:hover, .btn-donate:focus {
+    background: hsl(200, 50%, 60%);
+}
+
+.form-card {
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    padding: 20px;
+    height: auto;
+    margin: auto;
+    margin-top: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .3);
+    border-radius: .25rem;
+}
+
+.form-card-header {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.form-card-header a:first-child {
+    margin-left: 15px;
+}
+
+.form-card-header a:last-child {
+    margin-right: 15px;
+}
+
+.form-card-header a {
+    padding: 20px;
+    /* margin: 0 5px; */
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-bottom: solid rgba(0, 0, 0, .3) 3px;
+    transition: color 300ms, border-bottom 300ms;
+}
+
+.form-card-header a:hover, .form-card-header a:focus {
+    color: #f1b04c;
+    border-bottom: solid #ee9f27 3px;
+}
+
+.form-card-body h1 {
+    text-align: center;
+    margin: 20px 0;
+}
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    margin: 10px 0;
+}
+
+input, select {
+    border: 1px solid black;
+    border-radius: .15rem;
+}
+
+.btn-submit {
+    margin: 40px auto 20px auto;
+    width: 40%;
+    padding: 5px 15px;
+    font-size: 1.2rem;
 }

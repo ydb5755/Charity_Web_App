@@ -1,38 +1,44 @@
 {% extends 'base.html' %}
 {% block title %}Donation Page{% endblock title %}
 {% block content %}
-<br/>
-<br/>
-<br/>
-<br/>
-<h1>Recurring Donation Form</h1>
-<form method="POST" action="" enctype="multipart/form-data">
-    {{ rd_form.hidden_tag() }}
 
-    {{ rd_form.amount.label }}
-    {{ rd_form.amount() }}<br/>
-    {% for error in rd_form.amount.errors %}
-        <p>{{ error }}</p>
-    {% endfor %}
+<div class="form-card">
+    <div class="form-card-header">
+        <a href="{{ url_for('organization.recurring_donation_page', charity_id=charity.id, donor_id=current_user.id) }}" class="donation-link">Recurring</a>
+        <a href="{{ url_for('organization.one_time_donation_page', charity_id=charity.id, donor_id=current_user.id) }}" class="donation-link">One-Time</a>
+    </div>
+    <div class="form-card-body">
+        <h1>Recurring Donation</h1>
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ rd_form.hidden_tag() }}
+        
+            {{ rd_form.amount.label }}
+            {{ rd_form.amount() }}
+            {% for error in rd_form.amount.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        
+            {{ rd_form.how_often.label }}
+            {{ rd_form.how_often() }}
+            {% for error in rd_form.how_often.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        
+            {{ rd_form.start.label }}
+            {{ rd_form.start() }}
+            {% for error in rd_form.start.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        
+            {{ rd_form.end.label }}
+            {{ rd_form.end() }}
+            {% for error in rd_form.end.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        
+            {{ rd_form.submit(class='btn-donate btn-submit') }}
+        </form>
+    </div>
+</div>
 
-    {{ rd_form.how_often.label }}
-    {{ rd_form.how_often() }}<br/>
-    {% for error in rd_form.how_often.errors %}
-        <p>{{ error }}</p>
-    {% endfor %}
-
-    {{ rd_form.start.label }}
-    {{ rd_form.start() }}<br/>
-    {% for error in rd_form.start.errors %}
-        <p>{{ error }}</p>
-    {% endfor %}
-
-    {{ rd_form.end.label }}
-    {{ rd_form.end() }}<br/>
-    {% for error in rd_form.end.errors %}
-        <p>{{ error }}</p>
-    {% endfor %}
-
-    {{ rd_form.submit() }}<br/>
-</form>
 {% endblock content %}

@@ -43,6 +43,7 @@ class Charity(db.Model, UserMixin):
     bank             = Column(String(64), nullable=False)
     account_number   = Column(String(64), nullable=False)
     balance          = Column(Float, default=0)
+    home_page_text   = Column(String(200), default='')
     description      = Column(Text, default='')
     authenticated    = Column(Boolean, default=False)
     receipts         = db.relationship('Receipt', backref='charity', lazy='dynamic')

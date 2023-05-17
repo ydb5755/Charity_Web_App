@@ -7,7 +7,14 @@
         {% else %}
             {% if current_user.admin == True %}
                 {% for charity in charities_to_be_confirmed %}
-                    <p>Authenticate {{ charity.charity_name }} by clicking <a href="{{ url_for('organization.authenticate', charity_id=charity.id) }}">here</a></p>
+                    <div class="card card-auth">
+                        <div class="card-header">
+                            <h3>{{ charity.charity_name }} </h3>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{ url_for('organization.authenticate', charity_id=charity.id) }}" class="btn-donate">Authenticate!</a>
+                        </div>
+                    </div>
                 {% endfor %}
             {% endif %}
         {% endif %}

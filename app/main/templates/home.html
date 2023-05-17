@@ -1,24 +1,26 @@
 {% extends "base.html" %}
 {% block title %}Homepage{% endblock title %}
 {% block content %}
-    <div class="home_landing">
-        Welcome to Charity Page!
+    <div class="home-landing">
+        <div class="home-text">
+            Welcome to Charity Page!
+        </div>
+        <div class="home-spacer"></div>
     </div>
     <div class="card-container">
-        {% for charity in all_charities %}
-            {% if charity.authenticated == True %}
-                <div class="card">
-                    <div class="card-header">
-                        {{ charity.charity_name }}
-                    </div>
-                    <div class="card-body">
-                        {{ charity.description }}
-                    </div>
-                    <div class="card-footer">
-                        <a href="{{ url_for('organization.charity_page', charity_id=charity.id) }}">Donate Now!</a>
-                    </div>
+        
+        {% for charity in five_charities %}
+            <div class="card">
+                <div class="card-header">
+                    <h3>{{ charity.charity_name }}</h3>
                 </div>
-            {% endif %}
+                <div class="card-body">
+                    <p>{{ charity.home_page_text }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('organization.recurring_donation_page', charity_id=charity.id, donor_id=current_user.id) }}" class="btn-donate">Donate Now!</a>
+                </div>
+            </div>
         {% endfor %}
     </div>
     <br/>
