@@ -9,14 +9,7 @@ from datetime import datetime
 
 
 
-@organization.route('/charity_page/<charity_id>')
-@login_required
-def charity_page(charity_id): 
-    is_charity = isinstance(current_user, Charity)
-    charity = Charity.query.filter_by(id=charity_id).first()
-    return render_template('charity_page.html',
-                           charity=charity,
-                           is_charity=is_charity)
+
 
 @organization.route('/authenticate_charity/<charity_id>', methods=('GET', 'POST'))
 @login_required
@@ -27,7 +20,7 @@ def authenticate(charity_id):
     charity.authenticated = True
     db.session.commit()
     flash('Charity has been authenticated!')
-    return redirect(url_for('donor.profile_page', donor_id=current_user.id))
+    return redirect(url_for('donor.authenticate_charity'))
 
 @organization.route('/donation_page/charity/<charity_id>/donor/<donor_id>')
 @login_required
