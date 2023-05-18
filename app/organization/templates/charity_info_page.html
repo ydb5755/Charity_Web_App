@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Donation Page{% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="charity-item">
+        <h3>Name:</h3>
+        {{ charity.charity_name }}
+    </div>
+    <div class="charity-item">
+        <h3>Description:</h3>
+        {{ charity.description }}
+    </div>
+    <h1>Contact Info</h1>
+    <div class="charity-item">
+        <h3>Phone:</h3>
+        {{ charity.phone }}
+    </div>
+    <div class="charity-item">
+        <h3>Website:</h3>
+        {{ charity.website }}
+    </div>
+    <div class="charity-item">
+        <h3>Email:</h3>
+        {{ charity.email }}
+    </div>
+    <h1><a class="btn-donate" href="{{ url_for('organization.recurring_donation_page', charity_id=charity.id) }}">Donate Now!</a></h1>
+
+</div>
+{% endblock content %}

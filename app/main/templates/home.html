@@ -8,7 +8,7 @@
         <div class="home-spacer"></div>
     </div>
     <div class="card-container">
-        
+        <h1>Check out some of the charities that have joined!</h1>
         {% for charity in five_charities %}
             <div class="card">
                 <div class="card-header">
@@ -18,7 +18,8 @@
                     <p>{{ charity.home_page_text }}</p>
                 </div>
                 <div class="card-footer">
-                    <a href="{{ url_for('organization.recurring_donation_page', charity_id=charity.id, donor_id=current_user.id) }}" class="btn-donate">Donate Now!</a>
+                    <a href="{{ url_for('organization.charity_info_page', charity_id=charity.id) }}" class="btn-donate">Charity Page</a>
+                    <a href="{{ url_for('organization.recurring_donation_page', charity_id=charity.id) }}" class="btn-donate">Donate Now!</a>
                 </div>
             </div>
         {% endfor %}

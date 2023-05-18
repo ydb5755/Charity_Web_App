@@ -11,8 +11,12 @@
                         <div class="card-header">
                             <h3>{{ charity.charity_name }} </h3>
                         </div>
+                        <div class="card-body">
+                            <p>{{ charity.contact_name }}</p>
+                            <p>{{ charity.contact_cell }}</p>
+                        </div>
                         <div class="card-footer">
-                            <a href="{{ url_for('organization.authenticate', charity_id=charity.id) }}" class="btn-donate">Authenticate!</a>
+                            <a href="{{ url_for('organization.authentication_details', charity_id=charity.id) }}" class="btn-donate">Authenticate!</a> 
                         </div>
                     </div>
                 {% endfor %}

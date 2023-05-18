@@ -4,8 +4,8 @@
 
 <div class="form-card">
     <div class="form-card-header">
-        <a href="{{ url_for('organization.recurring_donation_page', charity_id=charity.id, donor_id=current_user.id) }}" class="donation-link">Recurring</a>
-        <a href="{{ url_for('organization.one_time_donation_page', charity_id=charity.id, donor_id=current_user.id) }}" class="donation-link">One-Time</a>
+        <a href="{{ url_for('organization.recurring_donation_page', charity_id=charity.id) }}" class="donation-link">Recurring</a>
+        <a href="{{ url_for('organization.one_time_donation_page', charity_id=charity.id) }}" class="donation-link">One-Time</a>
     </div>
     <div class="form-card-body">
         <h1>Recurring Donation</h1>

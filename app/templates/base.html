@@ -25,8 +25,8 @@
                     <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
                     <li><a href="{{ url_for('donor.profile_page', donor_id=current_user.id) }}">Profile</a></li>
                 {% else %}
-                    <li><a href="{{ url_for('main.login') }}">Login</a></li>
-                    <li><a href="{{ url_for('main.signup') }}">Sign Up</a></li>
+                    <li><a href="{{ url_for('main.login_donor') }}">Login</a></li>
+                    <li><a href="{{ url_for('main.signup_donor') }}">Sign Up</a></li>
                 {% endif %}
             </ul>
 
