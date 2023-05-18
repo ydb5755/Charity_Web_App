@@ -17,7 +17,7 @@ from datetime import datetime
 
 
 class SingleDonationForm(FlaskForm):
-    amount = DecimalField('Amount:')
+    amount = DecimalField('Amount:', render_kw={'placeholder': 'Amount'})
     submit = SubmitField('Donate!')
 
     def validate_amount(form, field):

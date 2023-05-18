@@ -7,10 +7,11 @@ from wtforms import StringField, \
                     BooleanField,\
                     IntegerField
 from wtforms.validators import DataRequired, ValidationError, NumberRange
+from app.models import Charity
+from flask_login import current_user
 
 
 class LoginForm(FlaskForm):
-    type_of_user = SelectField(choices=['Donor', 'Charity'])
     email        = EmailField('Email', validators=[DataRequired()])
     password     = PasswordField('Password', validators=[DataRequired()])
     remember     = BooleanField('Remember me')
@@ -36,11 +37,13 @@ class CharitySignUpForm(FlaskForm):
     phone            = StringField('Phone Number', validators=[DataRequired()])
     website          = StringField('Website')
     email            = StringField('Email', validators=[DataRequired()])
-    password         = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm your password', validators=[DataRequired()])
+    password         = PasswordField('Password', default=' ')
+    confirm_password = PasswordField('Confirm your password', default=' ')
     contact_name     = StringField('Contact Name')
     contact_cell     = StringField('Contact Cell', validators=[DataRequired()])
     contact_position = StringField('Contact Position')
     bank             = StringField('Bank', validators=[DataRequired()])
     account_number   = StringField('Account Number', validators=[DataRequired()])
-    submit           = SubmitField('Sign Up')
+    submit           = SubmitField('Submit For Review')
+
+    

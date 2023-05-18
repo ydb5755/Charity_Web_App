@@ -4,39 +4,77 @@ from flask_login import login_required, current_user
 from app.models import Charity, Donor, Pledge, Donation
 from app import db, scheduler
 from app.organization.forms import RecurringDonationForm, SingleDonationForm
+from app.main.forms import CharitySignUpForm
 from datetime import datetime
+from werkzeug.security import check_password_hash, generate_password_hash
 
 
 
 
 
-
-@organization.route('/authenticate_charity/<charity_id>', methods=('GET', 'POST'))
+@organization.route('/authentication_details/<charity_id>', methods=('GET', 'POST'))
 @login_required
-def authenticate(charity_id):
+def authentication_details(charity_id):
     if current_user.admin == False:
         return redirect(url_for('main.home'))
+    update_form = CharitySignUpForm()
     charity = Charity.query.filter_by(id=charity_id).first()
-    charity.authenticated = True
+    if update_form.validate_on_submit():
+        check_id = Charity.query.filter_by(id=update_form.id.data).first()
+        if check_id and not check_id.id == charity.id:
+            flash('A Charity with this ID exists already, please check your info', 'bad')
+            return redirect(url_for('organization.authentication_details',
+                                    charity_id=charity.id))
+        
+        check_email = Charity.query.filter_by(email=update_form.email.data).first()
+        if check_email and not check_email.email == charity.email:
+            flash('A Charity with this email exists already, please check your info', 'bad')
+            return redirect(url_for('organization.authentication_details',
+                                    charity_id=charity.id))
+            
+        if update_form.password.data != update_form.confirm_password.data:
+            flash('Passwords do not match, please try again', 'bad')
+            return redirect(url_for('organization.authentication_details',
+                                    charity_id=charity.id))
+        
+        pw = generate_password_hash(update_form.password.data, method='scrypt')
+
+        charity.id = update_form.id.data
+        charity.charity_name = update_form.charity_name.data
+        charity.address = update_form.address.data
+        charity.zip_code = update_form.zip_code.data
+        charity.phone = update_form.phone.data
+        charity.website = update_form.website.data
+        charity.email = update_form.email.data
+        charity.password = pw
+        charity.contact_name = update_form.contact_name.data
+        charity.contact_cell = update_form.contact_cell.data
+        charity.contact_position = update_form.contact_position.data
+        charity.bank = update_form.bank.data
+        charity.account_number = update_form.account_number.data
+        charity.authenticated = True
+        db.session.commit()
+        flash('Charity has been authenticated!', 'good')
+        return redirect(url_for('donor.authenticate_charity'))
+
+    return render_template('authentication_details.html',
+                           charity=charity,
+                           update_form=update_form)
+
+@organization.route('/delete_request/<charity_id>', methods=('GET', 'POST'))
+def delete_request(charity_id):
+    charity = Charity.query.filter_by(id=charity_id).first()
+    db.session.delete(charity)
     db.session.commit()
-    flash('Charity has been authenticated!')
+    flash('Request has been deleted')
     return redirect(url_for('donor.authenticate_charity'))
 
-@organization.route('/donation_page/charity/<charity_id>/donor/<donor_id>')
-@login_required
-def donation_page(charity_id, donor_id):
-    charity = Charity.query.filter_by(id=charity_id).first()
-    donor = Donor.query.filter_by(id=donor_id).first()
-    return render_template('donation_page.html',
-                           charity=charity,
-                           donor=donor)
 
-
-@organization.route('/recurring_donation/charity/<charity_id>/donor/<donor_id>', methods=('GET', 'POST'))
+@organization.route('/recurring_donation/charity/<charity_id>', methods=('GET', 'POST'))
 @login_required
-def recurring_donation_page(charity_id, donor_id):
+def recurring_donation_page(charity_id):
     charity = Charity.query.filter_by(id=charity_id).first()
-    donor = Donor.query.filter_by(id=donor_id).first()
+    donor = Donor.query.filter_by(id=current_user.id).first()
     rd_form = RecurringDonationForm()
     if rd_form.validate_on_submit():
         dt_start = rd_form.start.data
@@ -97,11 +135,11 @@ def processing_recurring_donations(charity_id, donor_id, pledge_id):
     return redirect(url_for('organization.recurring_donation_page', charity_id=charity.id, donor_id=donor.id))
 
 
-@organization.route('/one_time_donation/charity/<charity_id>/donor/<donor_id>', methods=('GET', 'POST'))
+@organization.route('/one_time_donation/charity/<charity_id>', methods=('GET', 'POST'))
 @login_required
-def one_time_donation_page(charity_id, donor_id):
+def one_time_donation_page(charity_id):
     charity = Charity.query.filter_by(id=charity_id).first()
-    donor = Donor.query.filter_by(id=donor_id).first()
+    donor = Donor.query.filter_by(id=current_user.id).first()
     sd_form = SingleDonationForm()
     if sd_form.validate_on_submit():
         donation = Donation(
@@ -116,6 +154,15 @@ def one_time_donation_page(charity_id, donor_id):
                            charity=charity,
                            donor=donor,
                            sd_form=sd_form)
+
+
+@organization.route('/charity_info_page/<charity_id>')
+def charity_info_page(charity_id):
+    charity = Charity.query.filter_by(id=charity_id).first()
+    return render_template('charity_info_page.html',
+                           charity=charity)
+
+
 
 
 
