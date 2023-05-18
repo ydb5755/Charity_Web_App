@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Signup{% endblock title %}
+{% block content %}
+
+
+
+<div class="form-card">
+    <div class="form-card-header">
+        <a href="{{ url_for('main.signup_donor') }}" class="donation-link">Donor</a>
+        <a href="{{ url_for('main.signup_charity') }}" class="donation-link">Charity</a>
+    </div>
+    <div class="form-card-body">
+        <h1>Charity Sign up</h1>
+        <form method="post" enctype="multipart/form-data">
+            {{ charity_form.hidden_tag() }}
+
+            {{ charity_form.id.label }}
+            {{ charity_form.id() }}
+
+            {{ charity_form.charity_name.label }}
+            {{ charity_form.charity_name() }}
+
+            {{ charity_form.address.label }}
+            {{ charity_form.address() }}
+
+            {{ charity_form.zip_code.label }}
+            {{ charity_form.zip_code() }}
+
+            {{ charity_form.phone.label }}
+            {{ charity_form.phone() }}
+
+            {{ charity_form.website.label }}
+            {{ charity_form.website() }}
+
+            {{ charity_form.email.label }}
+            {{ charity_form.email() }}
+
+            {{ charity_form.contact_name.label }}
+            {{ charity_form.contact_name() }}
+
+            {{ charity_form.contact_cell.label }}
+            {{ charity_form.contact_cell() }}
+
+            {{ charity_form.contact_position.label }}
+            {{ charity_form.contact_position() }}
+
+            {{ charity_form.bank.label }}
+            {{ charity_form.bank() }}
+
+            {{ charity_form.account_number.label }}
+            {{ charity_form.account_number() }}
+
+            {{ charity_form.submit(class='btn-donate') }}
+        </form>
+    </div>
+</div>
+
+
+
+
+
+{% endblock content %}

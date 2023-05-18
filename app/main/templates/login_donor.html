@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock title %}
+{% block content %}
+<div class="form-card">
+    <div class="form-card-header">
+        <a href="{{ url_for('main.login_donor') }}" class="donation-link">Donor</a>
+        <a href="{{ url_for('main.login_charity') }}" class="donation-link">Charity</a>
+    </div>
+    <div class="form-card-body">
+        <h1>Login Donor</h1>
+        <form method="post" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+        
+            {{ form.email.label }}
+            {{ form.email() }}
+        
+            {{ form.password.label }}
+            {{ form.password() }}
+            <div class="remember-forgot-pw">
+                {{ form.remember.label }}
+                {{ form.remember() }}
+                <a href="#">Forgot your password?</a>
+            </div>
+            {{ form.submit(class='btn-donate') }}
+        </form>
+    </div>
+</div>
+{% endblock content %}

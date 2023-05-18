@@ -25,43 +25,54 @@ def about():
     return render_template('about.html')
 
 
-@main.route('/login', methods=('GET', 'POST'))
-def login():
+@main.route('/login_donor', methods=('GET', 'POST'))
+def login_donor():
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
     form = LoginForm()
     if form.validate_on_submit():
-        if form.type_of_user.data == 'Donor':
-            donor = Donor.query.filter_by(email=form.email.data).first()
-            if not donor or not check_password_hash(donor.password, form.password.data):
-                flash('Please check your login details and try again.')
-                return redirect(url_for('main.login'))
-            login_user(donor, remember=form.remember.data)
-        if form.type_of_user.data == 'Charity':
-            charity = Charity.query.filter_by(email=form.email.data).first()
-            if not charity or not check_password_hash(charity.password, form.password.data):
-                flash('Please check your login details and try again.')
-                return redirect(url_for('main.login'))
-            if charity.authenticated == False:
-                flash('Your charity has not been confirmed yet, you will have to wait to login')
-                return redirect(url_for('main.home'))
-            login_user(charity, remember=form.remember.data)
-        flash("You've been logged in successfully!")
+        donor = Donor.query.filter_by(email=form.email.data).first()
+        if not donor or not check_password_hash(donor.password, form.password.data):
+            flash('Please check your login details and try again.', 'bad')
+            return redirect(url_for('main.login_donor'))
+        login_user(donor, remember=form.remember.data)
+        flash("You've been logged in successfully!", 'good')
         next_page = request.args.get('next')
         return redirect(next_page) if next_page else redirect(url_for('main.home'))
-    return render_template('login.html', form=form)
+    return render_template('login_donor.html', form=form)
 
-@main.route('/signup', methods=('GET', 'POST'))
-def signup():
+
+@main.route('/login_charity', methods=('GET', 'POST'))
+def login_charity():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        charity = Charity.query.filter_by(email=form.email.data).first()
+        if not charity or not check_password_hash(charity.password, form.password.data):
+            flash('Please check your login details and try again.', 'bad')
+            return redirect(url_for('main.login_charity'))
+        if charity.authenticated == False:
+            flash('Your charity has not been confirmed yet, you will have to wait to login', 'bad')
+            return redirect(url_for('main.home'))
+        login_user(charity, remember=form.remember.data)
+        flash("You've been logged in successfully!", 'good')
+        next_page = request.args.get('next')
+        return redirect(next_page) if next_page else redirect(url_for('main.home'))
+    return render_template('login_charity.html', form=form)
+
+
+@main.route('/signup_donor', methods=('GET', 'POST'))
+def signup_donor():
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
     donor_form = DonorSignUpForm()
     if donor_form.validate_on_submit():
         if Donor.query.filter_by(email=donor_form.email.data).first():
-            flash('This email is already signed up, please try another email or try to log in using this email')
+            flash('This email is already signed up, please try another email or try to log in using this email', 'bad')
             return redirect(url_for('main.signup'))
         if donor_form.password.data != donor_form.confirm_password.data:
-            flash('Passwords do not match, please try again')
+            flash('Passwords do not match, please try again', 'bad')
             return redirect(url_for('main.signup'))
         pw = generate_password_hash(donor_form.password.data, method='scrypt')
         donor = Donor(
@@ -76,17 +87,20 @@ def signup():
         )
         db.session.add(donor)
         db.session.commit()
-        flash("You've succesffully signed up! Please log in to continue!")
-        return redirect(url_for('main.login'))
+        flash("You've succesffully signed up! Please log in to continue!", 'good')
+        return redirect(url_for('main.login_donor'))
+    return render_template('signup_donor.html', 
+                           donor_form=donor_form)
+
+@main.route('/signup_charity', methods=('GET', 'POST'))
+def signup_charity():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
     charity_form = CharitySignUpForm()
     if charity_form.validate_on_submit():
         if Charity.query.filter_by(id=charity_form.id.data).first():
-            flash('A charity with this id already exists with us. Either check your id or try logging in.')
+            flash('A charity with this id already exists with us. Either check your id or try logging in.', 'bad')
             return redirect(url_for('main.signup'))
-        if charity_form.password.data != charity_form.confirm_password.data:
-            flash('Passwords do not match, please try again')
-            return redirect(url_for('main.signup'))
-        pw = generate_password_hash(charity_form.password.data, method='scrypt')
         charity = Charity(
                         id = charity_form.id.data,
                         charity_name = charity_form.charity_name.data,
@@ -95,24 +109,22 @@ def signup():
                         phone = charity_form.phone.data,
                         website = charity_form.website.data,
                         email = charity_form.email.data,
-                        password = pw,
                         contact_name = charity_form.contact_name.data,
                         contact_cell = charity_form.contact_cell.data,
                         contact_position = charity_form.contact_position.data,
                         bank = charity_form.bank.data,
-                        account_number = charity_form.account_number.data,
+                        account_number = charity_form.account_number.data
         )
         db.session.add(charity)
         db.session.commit()
-        flash('Your charity has been submitted for review! One of our staff will reach out to you in the next couple of business days to confirm details and activate your account.')
+        flash('Your charity has been submitted for review! One of our staff will reach out to you in the next couple of business days to confirm details and activate your account.', 'good')
         return redirect(url_for('main.home'))
-    return render_template('signup.html', 
-                           donor_form=donor_form,
+    return render_template('signup_charity.html',
                            charity_form=charity_form)
 
 @main.route('/logout')
 @login_required
 def logout():
     logout_user()
-    flash("You've been successfully logged out!")
+    flash("You've been successfully logged out!", 'good')
     return redirect(url_for('main.home'))

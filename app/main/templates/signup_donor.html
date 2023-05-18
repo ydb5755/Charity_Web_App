@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Signup{% endblock title %}
+{% block content %}
+<div class="form-card">
+    <div class="form-card-header">
+        <a href="{{ url_for('main.signup_donor') }}" class="donation-link">Donor</a>
+        <a href="{{ url_for('main.signup_charity') }}" class="donation-link">Charity</a>
+    </div>
+    <div class="form-card-body">
+        <h1>Signup Donor</h1>
+        <form method="post" enctype="multipart/form-data">
+            {{ donor_form.hidden_tag() }}
+        
+            {{ donor_form.first_name.label }}
+            {{ donor_form.first_name() }}
+        
+            {{ donor_form.last_name.label }}
+            {{ donor_form.last_name() }}
+        
+            {{ donor_form.address.label }}
+            {{ donor_form.address() }}
+        
+            {{ donor_form.zip_code.label }}
+            {{ donor_form.zip_code() }}
+        
+            {{ donor_form.phone_home.label }}
+            {{ donor_form.phone_home() }}
+        
+            {{ donor_form.phone_cell.label }}
+            {{ donor_form.phone_cell() }}
+        
+            {{ donor_form.email.label }}
+            {{ donor_form.email() }}
+        
+            {{ donor_form.password.label }}
+            {{ donor_form.password() }}
+        
+            {{ donor_form.confirm_password.label }}
+            {{ donor_form.confirm_password() }}
+        
+            {{ donor_form.submit(class='btn-donate') }}
+        </form>
+    </div>
+</div>
+{% endblock content %}
