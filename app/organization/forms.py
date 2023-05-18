@@ -17,8 +17,8 @@ from datetime import datetime
 
 
 class SingleDonationForm(FlaskForm):
-    amount = DecimalField('How much would you like to donate?')
-    submit = SubmitField('Donate')
+    amount = DecimalField('Amount:')
+    submit = SubmitField('Donate!')
 
     def validate_amount(form, field):
         if field.data < .01:
@@ -28,7 +28,7 @@ class SingleDonationForm(FlaskForm):
         
 
 class RecurringDonationForm(FlaskForm):
-    amount = StringField('Amount:')
+    amount = DecimalField('Amount:', render_kw={'placeholder': 'Amount'})
     how_often = SelectField('Frequency:', choices=['Second', 'Minute', 'Hour', 'Day', 'Week', 'Month'])
     start = DateTimeLocalField('Start:', format='%Y-%m-%dT%H:%M')
     end = DateTimeLocalField('End:', format='%Y-%m-%dT%H:%M')

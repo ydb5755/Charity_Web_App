@@ -12,12 +12,12 @@
             {{ sd_form.hidden_tag() }}
         
             {{ sd_form.amount.label }}
-            {{ sd_form.amount() }}<br/>
+            {{ sd_form.amount() }}
             {% for error in sd_form.amount.errors %}
                 <p>{{ error }}</p>
             {% endfor %}
         
-            {{ sd_form.submit() }}<br/>
+            {{ sd_form.submit(class='btn-donate btn-submit') }}
         </form>
     </div>
 </div>

@@ -54,9 +54,11 @@ def add_admin():
 def remove_admin():
     if not current_user.id == 1:
         return redirect(url_for('main.home'))
+    main_admin = Donor.query.filter_by(id=1).first()
     remove_admin_form = RemoveAdmin()
     admins = Donor.query.filter_by(admin=True).all()
-    remove_admin_form.admin.choices = [user.email for user in admins].remove(Donor.query.filter_by(id=1).first().email)
+    remove_admin_form.admin.choices = [user.email for user in admins]
+    remove_admin_form.admin.choices.remove(main_admin.email)
     if remove_admin_form.validate_on_submit():
         user = Donor.query.filter_by(email=remove_admin_form.admin.data).first()
         user.admin = False

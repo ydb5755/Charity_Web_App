@@ -94,7 +94,7 @@ def processing_recurring_donations(charity_id, donor_id, pledge_id):
     donor = Donor.query.filter_by(id=donor_id).first()
     pledge = Pledge.query.filter_by(id=pledge_id).first()
     scheduler.add_job(id=pledge_id, func=pledge_start_date, args=(pledge.id, ), trigger='date', run_date=pledge.start_date)
-    return redirect(url_for('organization.donation_page', charity_id=charity.id, donor_id=donor.id))
+    return redirect(url_for('organization.recurring_donation_page', charity_id=charity.id, donor_id=donor.id))
 
 
 @organization.route('/one_time_donation/charity/<charity_id>/donor/<donor_id>', methods=('GET', 'POST'))
@@ -111,7 +111,7 @@ def one_time_donation_page(charity_id, donor_id):
         )
         donation.process_donation()
         flash('Donation made succesfully!')
-        return redirect(url_for('organization.donation_page', charity_id=charity.id, donor_id=donor.id))
+        return redirect(url_for('organization.one_time_donation_page', charity_id=charity.id, donor_id=donor.id))
     return render_template('one_time_donation_page.html',
                            charity=charity,
                            donor=donor,

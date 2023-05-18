@@ -32,6 +32,21 @@ nav li {
     display: inline-block;
 }
 
+.alert {
+    text-align: center;
+    margin: auto;
+    font-size: 1rem;
+    width: 400px;
+    padding: 10px;
+}
+.alert-good {
+    background: hsl(130, 86%, 72%);
+}
+
+.alert-bad {
+    background: hsla(7, 92%, 59%, 0.603);
+}
+
 .home-landing {
     width:auto;
     height:50vh;
@@ -161,17 +176,21 @@ form {
 }
 
 form label {
-    margin: 10px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    width: fit-content;
 }
 
 input, select {
-    border: 1px solid black;
-    border-radius: .15rem;
+    border: 1px solid hsl(200, 50%, 70%);
+    border-radius: 5px;
+    padding: .5rem .5rem;
+    font-size: 1rem;
+    margin: 5px 0 15px;
 }
 
 .btn-submit {
-    margin: 40px auto 20px auto;
+    margin: 20px auto 20px auto;
     width: 40%;
     padding: 5px 15px;
-    font-size: 1.2rem;
+    font-size: 1.2em;
 }

@@ -1,17 +1,22 @@
 {% extends 'base.html' %}
 {% block title %}Profile Page{% endblock title %}
 {% block content %}
-    <form method="post" enctype="multipart/form-data">
-        {{ add_admin_form.hidden_tag() }}
+    <div class="form-card">
+        <div class="form-card-body">
+            <h1>Add an Admin</h1>
+            <form method="post" enctype="multipart/form-data">
+                {{ add_admin_form.hidden_tag() }}
 
-        {{ add_admin_form.id.label }}
-        {{ add_admin_form.id() }}<br/>
-        {% for error in add_admin_form.id.errors %}
-            <p>{{ error }}</p>
-        {% endfor %}
+                {{ add_admin_form.id.label }}
+                {{ add_admin_form.id() }}
+                {% for error in add_admin_form.id.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
 
-        {{ add_admin_form.submit() }}
-    </form>
+                {{ add_admin_form.submit(class='btn-donate btn-submit') }}
+            </form>
+        </div>
+    </div>
 {% endblock content %}
 
 

@@ -1,21 +1,25 @@
 {% extends 'base.html' %}
 {% block title %}Profile Page{% endblock title %}
 {% block content %}
-    <h3>Current Funds: {{ current_user.balance }}</h3>
-    {% if is_donor %}
-        <h3>Add Funds</h3><br/>
-        <form method="post" enctype="multipart/form-data">
-            {{ add_funds_form.hidden_tag() }}
-
-            {{ add_funds_form.amount.label }}
-            {{ add_funds_form.amount() }}<br/>
-            {% for error in add_funds_form.amount.errors %}
-                <p>{{ error }}</p>
-            {% endfor %}
-
-            {{ add_funds_form.submit() }}
-        </form>
-    {% endif %}
+<div class="form-card">
+    <div class="form-card-body">
+        <h1>Current Funds: {{ current_user.balance }}</h1>
+        {% if is_donor %}
+            <h1>Add Funds</h1>
+            <form method="post" enctype="multipart/form-data">
+                {{ add_funds_form.hidden_tag() }}
+    
+                {{ add_funds_form.amount.label }}
+                {{ add_funds_form.amount() }}
+                {% for error in add_funds_form.amount.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+    
+                {{ add_funds_form.submit(class='btn-donate btn-submit') }}
+            </form>
+        {% endif %}
+    </div>
+</div>
 {% endblock content %}
 
 

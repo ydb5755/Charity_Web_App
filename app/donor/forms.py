@@ -4,8 +4,8 @@ from wtforms.validators import DataRequired, ValidationError, NumberRange
 from app.models import Donor
 
 class AddAdmin(FlaskForm):
-    id = IntegerField('User ID', validators=[DataRequired()])
-    submit = SubmitField('Add Admin')
+    id = IntegerField('User ID', validators=[DataRequired()], render_kw={'placeholder': 'ID'})
+    submit = SubmitField('Add!')
 
     def validate_id(form, field):
         donor = Donor.query.filter_by(id=field.data).first()
@@ -17,8 +17,8 @@ class AddAdmin(FlaskForm):
 
 class RemoveAdmin(FlaskForm):
     admin = SelectField('Select Admin to remove priviliges', validators=[DataRequired()])
-    submit = SubmitField('Remove Admin')
+    submit = SubmitField('Remove')
 
 class AddFunds(FlaskForm):
-    amount = FloatField('Amount', validators=[DataRequired(), NumberRange(min=0)])
+    amount = FloatField('Amount', validators=[DataRequired(), NumberRange(min=0)], render_kw={'placeholder': 'Amount'})
     submit = SubmitField('Add Funds')

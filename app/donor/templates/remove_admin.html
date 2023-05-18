@@ -2,17 +2,22 @@
 {% block title %}Profile Page{% endblock title %}
 {% block content %}
     {% if remove_admin_form.admin.choices %}
-        <form method="post" enctype="multipart/form-data">
-            {{ remove_admin_form.hidden_tag() }}
-
-            {{ remove_admin_form.admin.label }}
-            {{ remove_admin_form.admin() }}<br/>
-            {% for error in remove_admin_form.admin.errors %}
-                <p>{{ error }}</p>
-            {% endfor %}
-
-            {{ remove_admin_form.submit() }}
-        </form>
+        <div class="form-card">
+            <div class="form-card-body">
+                <h1>Remove an Admin</h1>
+                <form method="post" enctype="multipart/form-data">
+                    {{ remove_admin_form.hidden_tag() }}
+        
+                    {{ remove_admin_form.admin.label }}
+                    {{ remove_admin_form.admin() }}
+                    {% for error in remove_admin_form.admin.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+        
+                    {{ remove_admin_form.submit(class='btn-donate btn-submit') }}
+                </form>
+            </div>
+        </div>
     {% else %}
         <h4>There are no other admins that can be removed</h4>
     {% endif %}
