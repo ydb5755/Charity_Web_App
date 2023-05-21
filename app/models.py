@@ -2,8 +2,8 @@ from app import db
 from flask import current_app
 from flask_login import UserMixin, current_user
 from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, DateTime, Time, Float, Text
-from datetime import datetime, timezone
-import time
+from datetime import datetime, timezone, timedelta
+import jwt
 
 
 class Donor(db.Model, UserMixin):
@@ -27,6 +27,34 @@ class Donor(db.Model, UserMixin):
     pledges         = db.relationship('Pledge', backref='donor', lazy='dynamic')
     donations       = db.relationship('Donation', backref='donor', lazy='dynamic')
 
+    
+    def get_reset_token(self, expiration=600):
+        reset_token = jwt.encode(
+            {
+                "confirm": self.id,
+                "exp": datetime.now(tz=timezone.utc)
+                       + timedelta(seconds=expiration)
+            },
+            current_app.config['SECRET_KEY'],
+            algorithm="HS256"
+        )
+        return reset_token
+    
+    @staticmethod
+    def verify_reset_token(token):
+        try:
+            data = jwt.decode(
+                token,
+                current_app.config['SECRET_KEY'],
+                leeway=timedelta(seconds=10),
+                algorithms=["HS256"]
+            )
+        except:
+            return None
+        if not Donor.query.get(data.get('confirm')):
+            return None
+        return Donor.query.get(data.get('confirm'))
+
 
 class Charity(db.Model, UserMixin):
     id               = Column(Integer, primary_key=True, autoincrement=False, unique=True)
@@ -49,6 +77,34 @@ class Charity(db.Model, UserMixin):
     receipts         = db.relationship('Receipt', backref='charity', lazy='dynamic')
     pledges         = db.relationship('Pledge', backref='charity', lazy='dynamic')
     donations       = db.relationship('Donation', backref='charity', lazy='dynamic')
+
+
+    def get_reset_token(self, expiration=600):
+        reset_token = jwt.encode(
+            {
+                "confirm": self.id,
+                "exp": datetime.now(tz=timezone.utc)
+                       + timedelta(seconds=expiration)
+            },
+            current_app.config['SECRET_KEY'],
+            algorithm="HS256"
+        )
+        return reset_token
+    
+    @staticmethod
+    def verify_reset_token(token):
+        try:
+            data = jwt.decode(
+                token,
+                current_app.config['SECRET_KEY'],
+                leeway=timedelta(seconds=10),
+                algorithms=["HS256"]
+            )
+        except:
+            return None
+        if not Charity.query.get(data.get('confirm')):
+            return None
+        return Charity.query.get(data.get('confirm'))
 
 
 class Receipt(db.Model):

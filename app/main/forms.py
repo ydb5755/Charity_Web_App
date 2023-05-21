@@ -6,8 +6,8 @@ from wtforms import StringField, \
                     SelectField, \
                     BooleanField,\
                     IntegerField
-from wtforms.validators import DataRequired, ValidationError, NumberRange, EqualTo
-from app.models import Charity
+from wtforms.validators import DataRequired, ValidationError, NumberRange, EqualTo, Email
+from app.models import Charity, Donor
 from flask_login import current_user
 
 
@@ -38,7 +38,7 @@ class CharitySignUpForm(FlaskForm):
     website          = StringField('Website')
     email            = StringField('Email', validators=[DataRequired()])
     password         = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm your password', validators=[DataRequired(), EqualTo(password)])
+    confirm_password = PasswordField('Confirm your password', validators=[DataRequired(), EqualTo('password')])
     contact_name     = StringField('Contact Name')
     contact_cell     = StringField('Contact Cell', validators=[DataRequired()])
     contact_position = StringField('Contact Position')
@@ -61,5 +61,23 @@ class CharityAuthenticateForm(FlaskForm):
     account_number   = StringField('Account Number', validators=[DataRequired()])
     submit           = SubmitField('Submit For Review')
 
+
+class RequestResetForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+    def validate_email(self, email):
+        donor = Donor.query.filter_by(email=email.data).first()
+        charity = Charity.query.filter_by(email=email.data).first()
+        if donor is None and charity is None:
+            raise ValidationError ('There is no account with that email. You must register first.')
+    
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', 
+                        validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', 
+                        validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Reset Password')
 
     

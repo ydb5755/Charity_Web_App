@@ -2,11 +2,10 @@ from app.organization import organization
 from flask import render_template, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
 from app.models import Charity, Donor, Pledge, Donation
-from app import db, scheduler
+from app import db, scheduler, mail
 from app.organization.forms import RecurringDonationForm, SingleDonationForm, UpdateCharityInfoForm
 from app.main.forms import CharityAuthenticateForm
 from datetime import datetime
-from werkzeug.security import check_password_hash, generate_password_hash
 
 
 
@@ -193,50 +192,15 @@ def charity_info_page(charity_id):
 
 @organization.route('/all_charities')
 def all_charities():
+    is_charity = isinstance(current_user, Charity)
+    if is_charity:
+        return redirect(url_for('main.home'))
     charities = Charity.query.filter_by(authenticated=True).all()
     return render_template('all_charities.html',
-                           charities=charities)
+                           charities=charities,
+                           is_charity=is_charity)
 
 
 
 
 
-
-
-        # t = Timer(10, pledge.process_pledge)
-        # t.start()
-        # scheduler.add_job(func=pledge.process_pledge(), trigger="date", run_date=dt_start)
-        # x = Thread(target=pledge.process_pledge, daemon=True)
-        # x.start()
-        # pledge.process_pledge()
-
-
-        #You only need one thread to keep on repeating one function which goes through all pledges every second and checks if "end > datetime.now() > start". If True, then process transaction \
-        # using local_var saved time with frequency difference (start + frequency) 
-        # (end-start)/frequency   -----   (10-2)/2 == 4 ---- 4-2 == 2
-        # if now - start is divisible by frequency then process 
-
-        
-    # start = pledge.start_date.timestamp().__floor__()
-    # end = pledge.end_date.timestamp().__floor__()
-    # now = datetime.now().timestamp().__floor__()
-    # while now <= end:
-    #     if start <= now :
-    #         if frequency == 'Month':
-    #             pledge.donor.balance -= pledge.amount
-    #             pledge.charity.balance += pledge.amount
-    #             db.session.commit()
-    #             pledge.start_date.year
-    #             time.sleep(1)
-    #             now = datetime.now().timestamp().__floor__()
-    #             continue
-    #         else:
-    #             print(times.get(frequency))
-    #             pledge.donor.balance -= pledge.amount
-    #             pledge.charity.balance += pledge.amount
-    #             db.session.commit()
-    #             time.sleep(times.get(frequency))
-    #             now = datetime.now().timestamp().__floor__()
-    #             continue
-    #     time.sleep(1)
-    #     now = datetime.now().timestamp().__floor__()

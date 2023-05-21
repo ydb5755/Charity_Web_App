@@ -19,7 +19,7 @@
             <div class="remember-forgot-pw">
                 {{ form.remember.label }}
                 {{ form.remember() }}
-                <a href="#">Forgot your password?</a>
+                <a href="{{ url_for('main.reset_request') }}">Forgot your password?</a>
             </div>
             {{ form.submit(class='btn-donate') }}
         </form>

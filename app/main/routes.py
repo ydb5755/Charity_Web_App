@@ -1,11 +1,12 @@
 from app.main import main
 from flask import render_template, url_for, redirect, flash, session, request
 from app.models import Charity, Donor
-from app.main.forms import LoginForm, DonorSignUpForm, CharitySignUpForm
+from app.main.forms import LoginForm, DonorSignUpForm, CharitySignUpForm, RequestResetForm, ResetPasswordForm
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import db
 from random import randint
+from app.main.utils import send_reset_email
 
 
 @main.route('/')
@@ -129,3 +130,44 @@ def logout():
     logout_user()
     flash("You've been successfully logged out!", 'good')
     return redirect(url_for('main.home'))
+
+
+@main.route('/reset_password', methods=('GET', 'POST'))
+def reset_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
+    form = RequestResetForm()
+    if form.validate_on_submit():
+        charity = Charity.query.filter_by(email=form.email.data).first()
+        donor = Donor.query.filter_by(email=form.email.data).first()
+        if charity:
+            send_reset_email(charity)
+        if donor:
+            send_reset_email(donor)
+        flash('An email has been sent with instructions to reset your password', 'good')
+        return redirect(url_for('main.login_donor'))
+    return render_template('reset_request.html', 
+                           form=form)
+
+
+@main.route('/reset_password/<token>', methods=('GET', 'POST'))
+def reset_token(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
+    charity = Charity.verify_reset_token(token)
+    donor = Donor.verify_reset_token(token)
+    if charity is None and donor is None:
+        flash('That is an invalid or expired token', 'bad')
+        return redirect(url_for('charity.reset_request'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data, method='scrypt')
+        if charity:
+            charity.password = hashed_password
+        if donor:
+            donor.password = hashed_password
+        db.session.commit()
+        flash('Your password has been updated! You are now able to log in', 'good')
+        return redirect(url_for('main.login_donor'))
+    return render_template('reset_token.html', 
+                           form=form)

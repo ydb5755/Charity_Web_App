@@ -6,8 +6,8 @@ from wtforms import (StringField,
                      FloatField, 
                      EmailField, 
                      PasswordField)
-from wtforms.validators import DataRequired, ValidationError, NumberRange
-from app.models import Donor
+from wtforms.validators import DataRequired, ValidationError, NumberRange, Email, EqualTo
+from app.models import Donor, Charity
 
 class AddAdmin(FlaskForm):
     id = IntegerField('User ID', validators=[DataRequired()], render_kw={'placeholder': 'ID'})
@@ -44,3 +44,4 @@ class UpdateDonorInfoForm(FlaskForm):
     password         = PasswordField('Enter a password')
     confirm_password = PasswordField('Confirm your password')
     submit           = SubmitField('Update Account')
+

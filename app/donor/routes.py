@@ -4,7 +4,7 @@ from app.models import Donor, Charity
 from flask_login import current_user, login_required
 from app.donor.forms import AddAdmin, RemoveAdmin, AddFunds, UpdateDonorInfoForm
 from app import db
-from werkzeug.security import generate_password_hash
+from datetime import datetime
 
 
 @donor.route('/donor_profile/<donor_id>')
@@ -16,8 +16,81 @@ def donor_profile_page(donor_id):
     if not int(current_user.id) == int(donor_id):
         return redirect(url_for('main.home'))
     donor = Donor.query.filter_by(id=donor_id).first()
+    active_donor_pledges = []
+    now = datetime.now()
+    for pledge in donor.pledges:
+        if pledge.end_date > now > pledge.start_date:
+            active_donor_pledges.append(pledge)
     return render_template('profile.html',
-                           donor=donor)
+                           donor=donor,
+                           active_donor_pledges=active_donor_pledges)
+
+@donor.route('/donor_profile/<donor_id>/scheduled_donor_pledges')
+@login_required
+def scheduled_donor_pledges(donor_id):
+    is_donor = isinstance(current_user, Donor)
+    if not is_donor:
+        return redirect(url_for('organization.charity_profile_page', charity_id=current_user.id))
+    if not int(current_user.id) == int(donor_id):
+        return redirect(url_for('main.home'))
+    donor = Donor.query.filter_by(id=donor_id).first()
+    now = datetime.now()
+    scheduled_donor_pledges = []
+    for pledge in donor.pledges:
+        if now < pledge.start_date:
+            scheduled_donor_pledges.append(pledge)
+    return render_template('scheduled_donor_pledges.html',
+                           donor=donor,
+                           scheduled_donor_pledges=scheduled_donor_pledges)
+
+@donor.route('/donor_profile/<donor_id>/completed_donor_pledges')
+@login_required
+def completed_donor_pledges(donor_id):
+    is_donor = isinstance(current_user, Donor)
+    if not is_donor:
+        return redirect(url_for('organization.charity_profile_page', charity_id=current_user.id))
+    if not int(current_user.id) == int(donor_id):
+        return redirect(url_for('main.home'))
+    donor = Donor.query.filter_by(id=donor_id).first()
+    now = datetime.now()
+    completed_donor_pledges = []
+    for pledge in donor.pledges:
+        if now > pledge.start_date:
+            completed_donor_pledges.append(pledge)
+    return render_template('completed_donor_pledges.html',
+                           donor=donor,
+                           completed_donor_pledges=completed_donor_pledges)
+
+@donor.route('/donor_profile/<donor_id>/all_one_time_donations')
+@login_required
+def all_one_time_donations(donor_id):
+    is_donor = isinstance(current_user, Donor)
+    if not is_donor:
+        return redirect(url_for('organization.charity_profile_page', charity_id=current_user.id))
+    if not int(current_user.id) == int(donor_id):
+        return redirect(url_for('main.home'))
+    donor = Donor.query.filter_by(id=donor_id).first()
+    all_one_time_donations = donor.donations.all()
+    return render_template('all_one_time_donations.html',
+                           donor=donor,
+                           all_one_time_donations=all_one_time_donations)
+
+@donor.route('/donor_profile/<donor_id>/all_receipts')
+@login_required
+def all_receipts(donor_id):
+    is_donor = isinstance(current_user, Donor)
+    if not is_donor:
+        return redirect(url_for('organization.charity_profile_page', charity_id=current_user.id))
+    if not int(current_user.id) == int(donor_id):
+        return redirect(url_for('main.home'))
+    donor = Donor.query.filter_by(id=donor_id).first()
+    all_receipts = donor.receipts.all()
+    print(all_receipts)
+    return render_template('all_receipts.html',
+                           donor=donor,
+                           all_receipts=all_receipts)
+
+
 
 @donor.route('/profile/<donor_id>/add_funds', methods=('GET', 'POST'))
 @login_required
