@@ -145,7 +145,7 @@ nav li {
     background: hsl(200, 50%, 60%);
 }
 
-.form-card {
+.form-card, .profile-welcome {
     background: white;
     display: flex;
     flex-direction: column;
@@ -179,7 +179,6 @@ nav li {
 
 .form-card-header a {
     padding: 20px;
-    /* margin: 0 5px; */
     font-size: 1.5rem;
     font-weight: 700;
     border-bottom: solid rgba(0, 0, 0, .3) 3px;

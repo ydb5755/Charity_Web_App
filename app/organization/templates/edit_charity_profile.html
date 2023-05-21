@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Profile Page{% endblock title %}
+{% block content %}
+<div class="form-card">
+    <div class="form-card-body">
+        <h1>Edit Info</h1>
+        <form method="post" enctype="multipart/form-data">
+            {{ update_form.hidden_tag() }}
+
+            {{ update_form.id.label }}
+            {{ update_form.id(value=charity.id) }}
+
+            {{ update_form.charity_name.label }}
+            {{ update_form.charity_name(value=charity.charity_name) }}
+
+            {{ update_form.address.label }}
+            {{ update_form.address(value=charity.address) }}
+
+            {{ update_form.zip_code.label }}
+            {{ update_form.zip_code(value=charity.zip_code) }}
+
+            {{ update_form.phone.label }}
+            {{ update_form.phone(value=charity.phone) }}
+
+            {{ update_form.website.label }}
+            {{ update_form.website(value=charity.website) }}
+
+            {{ update_form.email.label }}
+            {{ update_form.email(value=charity.email) }}
+
+            {{ update_form.contact_name.label }}
+            {{ update_form.contact_name(value=charity.contact_name) }}
+
+            {{ update_form.contact_cell.label }}
+            {{ update_form.contact_cell(value=charity.contact_cell) }}
+
+            {{ update_form.contact_position.label }}
+            {{ update_form.contact_position(value=charity.contact_position) }}
+
+            {{ update_form.bank.label }}
+            {{ update_form.bank(value=charity.bank) }}
+
+            {{ update_form.account_number.label }}
+            {{ update_form.account_number(value=charity.account_number) }}
+
+            {{ update_form.submit(class='btn-donate btn-submit') }}
+        </form>
+    </div>
+</div>
+{% endblock content %}

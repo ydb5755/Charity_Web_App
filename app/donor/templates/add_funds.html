@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Profile Page{% endblock title %}
+{% block content %}
+
+<div class="form-card">
+    <div class="form-card-body">
+        <h1>Add Funds</h1>
+        <form method="post" enctype="multipart/form-data">
+            {{ add_funds_form.hidden_tag() }}
+
+            {{ add_funds_form.amount.label }}
+            {{ add_funds_form.amount() }}
+            {% for error in add_funds_form.amount.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+
+            {{ add_funds_form.cc_number.label }}
+            {{ add_funds_form.cc_number() }}
+            {% for error in add_funds_form.cc_number.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+
+            {{ add_funds_form.expiry_date.label }}
+            {{ add_funds_form.expiry_date() }}
+            {% for error in add_funds_form.expiry_date.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+
+            {{ add_funds_form.sec_code.label }}
+            {{ add_funds_form.sec_code() }}
+            {% for error in add_funds_form.sec_code.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+
+            {{ add_funds_form.tz.label }}
+            {{ add_funds_form.tz() }}
+            {% for error in add_funds_form.tz.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+
+            {{ add_funds_form.submit(class='btn-donate btn-submit') }}
+        </form>
+    </div>
+</div>
+{% endblock content %}
+

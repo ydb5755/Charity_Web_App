@@ -6,11 +6,10 @@
     <div class="form-card-body">
         <p>Current Funds:</p>
         <h1>{{ current_user.balance }}</h1>
-            <a href="{{ url_for('donor.add_funds', donor_id=donor.id) }}" class="btn-donate">Add Funds</a>
     </div>
 </div>
 <div>
-        <a href="{{ url_for('donor.edit_donor_profile', donor_id=donor.id) }}">Edit Profile Details</a>
+    <a href="{{ url_for('organization.edit_charity_profile', charity_id=charity.id) }}">Edit Profile Details</a>
 </div>
 {% endblock content %}
 

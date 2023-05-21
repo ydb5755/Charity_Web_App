@@ -2,7 +2,9 @@ from flask_wtf import FlaskForm
 from wtforms import (SubmitField,
                     SelectField,
                     DateTimeLocalField,
-                    DecimalField)
+                    DecimalField,
+                    IntegerField,
+                    StringField)
 from wtforms.validators import DataRequired, ValidationError, NumberRange
 from flask_login import current_user
 from datetime import datetime
@@ -17,7 +19,23 @@ class SingleDonationForm(FlaskForm):
             raise ValidationError('Amount should be at least .01')
         if current_user.balance < field.data:
             raise ValidationError('You do not have enough funds to make this donation')
-        
+
+class UpdateCharityInfoForm(FlaskForm):
+    id               = IntegerField('Charity ID', validators=[DataRequired(), NumberRange(min=5000)])
+    charity_name     = StringField('Charity Name', validators=[DataRequired()])
+    address          = StringField('Address', validators=[DataRequired()])
+    zip_code         = StringField('Zipcode', validators=[DataRequired()])
+    phone            = StringField('Phone Number', validators=[DataRequired()])
+    website          = StringField('Website')
+    email            = StringField('Email', validators=[DataRequired()])
+    contact_name     = StringField('Contact Name')
+    contact_cell     = StringField('Contact Cell', validators=[DataRequired()])
+    contact_position = StringField('Contact Position')
+    bank             = StringField('Bank', validators=[DataRequired()])
+    account_number   = StringField('Account Number', validators=[DataRequired()])
+    submit           = SubmitField('Update Account')
+
+
 
 class RecurringDonationForm(FlaskForm):
     amount = DecimalField('Amount:', render_kw={'placeholder': 'Amount'})

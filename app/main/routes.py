@@ -7,17 +7,18 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from app import db
 from random import randint
 
-is_charity = isinstance(current_user, Charity)
 
 @main.route('/')
 def home():
+    is_charity = isinstance(current_user, Charity)
     all_charities = Charity.query.filter_by(authenticated=True).all()
     five_charities = []
     for _ in range(5):
         five_charities.append(all_charities[randint(0, (len(all_charities) - 1))])
     return render_template('home.html', 
                            all_charities=all_charities,
-                           five_charities=five_charities)
+                           five_charities=five_charities,
+                           is_charity=is_charity)
 
 
 @main.route('/about')

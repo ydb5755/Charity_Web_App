@@ -7,10 +7,21 @@ from app import db
 from werkzeug.security import generate_password_hash
 
 
-@donor.route('/profile/<donor_id>', methods=('GET', 'POST'))
+@donor.route('/donor_profile/<donor_id>')
 @login_required
-def profile_page(donor_id):
+def donor_profile_page(donor_id):
     is_donor = isinstance(current_user, Donor)
+    if not is_donor:
+        return redirect(url_for('organization.charity_profile_page', charity_id=current_user.id))
+    if not int(current_user.id) == int(donor_id):
+        return redirect(url_for('main.home'))
+    donor = Donor.query.filter_by(id=donor_id).first()
+    return render_template('profile.html',
+                           donor=donor)
+
+@donor.route('/profile/<donor_id>/add_funds', methods=('GET', 'POST'))
+@login_required
+def add_funds(donor_id):
     if not int(current_user.id) == int(donor_id):
         return redirect(url_for('main.home'))
     donor = Donor.query.filter_by(id=donor_id).first()
@@ -18,12 +29,12 @@ def profile_page(donor_id):
     if add_funds_form.validate_on_submit():
         donor.balance += float(add_funds_form.amount.data)
         db.session.commit()
-        flash('Funds added!')
+        flash('Funds added!', 'good')
         return redirect(url_for('donor.profile_page', donor_id=current_user.id))
-    return render_template('profile.html',
+    return render_template('add_funds.html',
                            donor=donor,
-                           add_funds_form=add_funds_form,
-                           is_donor=is_donor)
+                           add_funds_form=add_funds_form)
+
 
 
 @donor.route('/profile/<donor_id>/edit_donor_profile', methods=('GET', 'POST'))
@@ -38,11 +49,6 @@ def edit_donor_profile(donor_id):
         donor.phone_home = update_form.phone_home.data
         donor.phone_cell = update_form.phone_cell.data
         donor.email = update_form.email.data
-        # if update_form.password.data:
-        #     if update_form.password.data != update_form.confirm_password.data:
-        #         flash('If you want to update your password then it must match the confirm password field', 'bad')
-        #         return redirect(url_for('edit_donor_profile', donor_id=donor.id))
-        #     donor.password = update_form.password.data
         db.session.commit()
         flash('Account has been updated!', 'good')
         return redirect(url_for('donor.profile_page', donor_id=donor.id))

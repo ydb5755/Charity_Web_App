@@ -3,7 +3,7 @@ from flask import render_template, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
 from app.models import Charity, Donor, Pledge, Donation
 from app import db, scheduler
-from app.organization.forms import RecurringDonationForm, SingleDonationForm
+from app.organization.forms import RecurringDonationForm, SingleDonationForm, UpdateCharityInfoForm
 from app.main.forms import CharityAuthenticateForm
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -11,6 +11,43 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 
 
+@organization.route('/edit_charity_profile/<charity_id>', methods=('GET', 'POST'))
+@login_required
+def edit_charity_profile(charity_id):
+    charity = Charity.query.filter_by(id=charity_id).first()
+    update_form = UpdateCharityInfoForm()
+    if update_form.validate_on_submit():
+        charity.id = update_form.id.data
+        charity.charity_name = update_form.charity_name.data
+        charity.address = update_form.address.data
+        charity.zip_code = update_form.zip_code.data
+        charity.phone = update_form.phone.data
+        charity.website = update_form.website.data
+        charity.email = update_form.email.data
+        charity.contact_name = update_form.contact_name.data
+        charity.contact_cell = update_form.contact_cell.data
+        charity.contact_position = update_form.contact_position.data
+        charity.bank = update_form.bank.data
+        charity.account_number = update_form.account_number.data
+        db.session.commit()
+        flash('Account has been updated!', 'good')
+        return redirect(url_for('organization.charity_profile_page', charity_id=charity.id))
+    return render_template('edit_charity_profile.html',
+                           charity=charity,
+                           update_form=update_form)
+
+
+@organization.route('/charity_profile/<charity_id>', methods=('GET', 'POST'))
+@login_required
+def charity_profile_page(charity_id):
+    is_charity = isinstance(current_user, Charity)
+    if not is_charity:
+        return redirect(url_for('donor.donor_profile_page', donor_id=current_user.id))
+    if not int(current_user.id) == int(charity_id):
+        return redirect(url_for('main.home'))
+    charity = Charity.query.filter_by(id=charity_id).first()
+    return render_template('charity_profile_page.html',
+                           charity=charity)
 
 @organization.route('/authentication_details/<charity_id>', methods=('GET', 'POST'))
 @login_required

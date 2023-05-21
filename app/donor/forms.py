@@ -27,6 +27,10 @@ class RemoveAdmin(FlaskForm):
 
 class AddFunds(FlaskForm):
     amount = FloatField('Amount', validators=[DataRequired(), NumberRange(min=0)], render_kw={'placeholder': 'Amount'})
+    cc_number = StringField('Card Number')
+    expiry_date = StringField('Expiry Date')
+    sec_code = StringField('Security Code')
+    tz = StringField('Israeli ID Number')
     submit = SubmitField('Add Funds')
 
 class UpdateDonorInfoForm(FlaskForm):
