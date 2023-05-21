@@ -3,30 +3,32 @@
 {% block content %}
     <div class="home-landing">
         <div class="home-text">
-            <h1>Welcome to Charity Page!</h1>
+            <h1>Welcome to MyPledge!!</h1>
         </div>
         <div class="home-spacer"></div>
     </div>
-    <div class="card-container-label">
-        <h1>Check out some of the charities that have joined!</h1>
-    </div>
-    <div class="card-container">
-        {% for charity in five_charities %}
-            <div class="card">
-                <div class="card-header">
-                    <h3>{{ charity.charity_name }}</h3>
+    {% if not is_charity %}
+        <div class="card-container-label">
+            <h1>Check out some of the charities that have joined!</h1>
+        </div>
+        <div class="card-container">
+            {% for charity in five_charities %}
+                <div class="card">
+                    <div class="card-header">
+                        <h3>{{ charity.charity_name }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>{{ charity.home_page_text }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('organization.charity_info_page', charity_id=charity.id) }}" class="btn-donate">Charity Page</a>
+                        <a href="{{ url_for('organization.recurring_donation_page', charity_id=charity.id) }}" class="btn-donate">Donate Now!</a>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p>{{ charity.home_page_text }}</p>
-                </div>
-                <div class="card-footer">
-                    <a href="{{ url_for('organization.charity_info_page', charity_id=charity.id) }}" class="btn-donate">Charity Page</a>
-                    <a href="{{ url_for('organization.recurring_donation_page', charity_id=charity.id) }}" class="btn-donate">Donate Now!</a>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-    <div class="card-container-footer btn-donate">
-        <a href="{{ url_for('organization.all_charities') }}">See all charities</a>
-    </div>
+            {% endfor %}
+        </div>
+        <div class="card-container-footer btn-donate">
+            <a href="{{ url_for('organization.all_charities') }}">See all charities</a>
+        </div>
+    {% endif %}
 {% endblock content %}

@@ -12,16 +12,16 @@
     </div>
 </div>
 <div class="form-card-header">
-    <a class="donation-link" href="{{ url_for('donor.donor_profile_page', donor_id=donor.id) }}" style="color: #f1b04c; border-bottom: solid #ee9f27 3px;">Active Pledges</a>
-    <a class="donation-link" href="{{ url_for('donor.scheduled_donor_pledges', donor_id=donor.id) }}">Scheduled Pledges</a>
+    <a class="donation-link" href="{{ url_for('donor.donor_profile_page', donor_id=donor.id) }}">Active Pledges</a>
+    <a class="donation-link" href="{{ url_for('donor.scheduled_donor_pledges', donor_id=donor.id) }}" style="color: #f1b04c; border-bottom: solid #ee9f27 3px;">Scheduled Pledges</a>
     <a class="donation-link" href="{{ url_for('donor.completed_donor_pledges', donor_id=donor.id) }}">Completed Pledges</a>
     <a class="donation-link" href="{{ url_for('donor.all_one_time_donations', donor_id=donor.id) }}">Donation History</a>
     <a class="donation-link" href="{{ url_for('donor.all_receipts', donor_id=donor.id) }}">Receipts</a>
 </div>
-{% if active_donor_pledges %}
+{% if scheduled_donor_pledges %}
 <div class="donation-table">
     <table>
-        <h1>Active Pledges</h1>
+        <h1>Scheduled Pledges</h1>
         <tr>
             <th>Start</th>
             <th>End</th>
@@ -29,7 +29,7 @@
             <th>Amount</th>
             <th>Charity</th>
         </tr>
-        {% for pledge in active_donor_pledges %}
+        {% for pledge in scheduled_donor_pledges %}
             <tr>
                 <td>{{ pledge.start_date }}</td>
                 <td>{{ pledge.end_date }}</td>
@@ -45,6 +45,4 @@
 {% endif %}
 
 {% endblock content %}
-
-
 

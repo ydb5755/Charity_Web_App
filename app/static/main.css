@@ -194,6 +194,15 @@ nav li {
     text-align: center;
     margin: 20px 0;
 }
+
+.form-card-body {
+    display: flex;
+    flex-direction: column;
+}
+.body-links {
+    align-self: center;
+}
+
 form {
     display: flex;
     flex-direction: column;
@@ -233,4 +242,31 @@ input, select {
     width: 100%;
     display: flex;
     justify-content: center;
+}
+
+.donation-table {
+    width: 100%;
+    padding-left: 2em;
+}
+table, th, td {
+    border-collapse: collapse;
+    padding: .75em;
+}
+table {
+    min-width: 300px;
+    border: 2px solid black;
+}
+
+th {
+    border: 1px solid black;
+    font-weight: bold;
+    text-align: left;
+}
+
+td {
+    border: 1px solid black;
+}
+
+table tr:nth-child(even) {
+    background-color: #D3D3D3;
 }
