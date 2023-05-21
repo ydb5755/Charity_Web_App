@@ -1,5 +1,11 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, IntegerField, FloatField
+from wtforms import (StringField, 
+                     SubmitField, 
+                     SelectField, 
+                     IntegerField, 
+                     FloatField, 
+                     EmailField, 
+                     PasswordField)
 from wtforms.validators import DataRequired, ValidationError, NumberRange
 from app.models import Donor
 
@@ -22,3 +28,15 @@ class RemoveAdmin(FlaskForm):
 class AddFunds(FlaskForm):
     amount = FloatField('Amount', validators=[DataRequired(), NumberRange(min=0)], render_kw={'placeholder': 'Amount'})
     submit = SubmitField('Add Funds')
+
+class UpdateDonorInfoForm(FlaskForm):
+    first_name       = StringField('First Name', validators=[DataRequired()])
+    last_name        = StringField('Last Name', validators=[DataRequired()])
+    address          = StringField('Address', validators=[DataRequired()])
+    zip_code         = StringField('Zipcode', validators=[DataRequired()])
+    phone_home       = StringField('Phone Home')
+    phone_cell       = StringField('Phone Cell', validators=[DataRequired()])
+    email            = EmailField('Email', validators=[DataRequired()])
+    password         = PasswordField('Enter a password')
+    confirm_password = PasswordField('Confirm your password')
+    submit           = SubmitField('Update Account')

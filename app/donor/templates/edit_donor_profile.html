@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Profile Page{% endblock title %}
+{% block content %}
+<div class="form-card">
+    <div class="form-card-body">
+        <h1>Edit Info</h1>
+        <form method="post" enctype="multipart/form-data">
+            {{ update_form.hidden_tag() }}
+
+            {{ update_form.first_name.label }}
+            {{ update_form.first_name(value=donor.first_name) }}
+
+            {{ update_form.last_name.label }}
+            {{ update_form.last_name(value=donor.last_name) }}
+
+            {{ update_form.address.label }}
+            {{ update_form.address(value=donor.address) }}
+
+            {{ update_form.zip_code.label }}
+            {{ update_form.zip_code(value=donor.zip_code) }}
+
+            {{ update_form.phone_home.label }}
+            {{ update_form.phone_home(value=donor.phone_home) }}
+
+            {{ update_form.phone_cell.label }}
+            {{ update_form.phone_cell(value=donor.phone_cell) }}
+
+            {{ update_form.email.label }}
+            {{ update_form.email(value=donor.email) }}
+
+            {{ update_form.submit(class='btn-donate btn-submit') }}
+        </form>
+    </div>
+</div>
+{% endblock content %}

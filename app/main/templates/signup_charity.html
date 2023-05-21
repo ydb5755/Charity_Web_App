@@ -7,7 +7,7 @@
 <div class="form-card">
     <div class="form-card-header">
         <a href="{{ url_for('main.signup_donor') }}" class="donation-link">Donor</a>
-        <a href="{{ url_for('main.signup_charity') }}" class="donation-link">Charity</a>
+        <a href="{{ url_for('main.signup_charity') }}" class="donation-link" style="color: #f1b04c; border-bottom: solid #ee9f27 3px;">Charity</a>
     </div>
     <div class="form-card-body">
         <h1>Charity Sign up</h1>
@@ -35,6 +35,12 @@
             {{ charity_form.email.label }}
             {{ charity_form.email() }}
 
+            {{ charity_form.password.label }}
+            {{ charity_form.password() }}
+
+            {{ charity_form.confirm_password.label }}
+            {{ charity_form.confirm_password() }}
+
             {{ charity_form.contact_name.label }}
             {{ charity_form.contact_name() }}
 
@@ -52,6 +58,7 @@
 
             {{ charity_form.submit(class='btn-donate') }}
         </form>
+        <a href="{{ url_for('main.login_charity') }}" class="go_to_sign_up_and_login">Already Have An Account?</a>
     </div>
 </div>
 

@@ -1,25 +1,28 @@
 {% extends 'base.html' %}
 {% block title %}Profile Page{% endblock title %}
 {% block content %}
-<div class="form-card">
-    <div class="form-card-body">
-        <h1>Current Funds: {{ current_user.balance }}</h1>
-        {% if is_donor %}
+<h1>Current Funds: {{ current_user.balance }}</h1>
+{% if is_donor %}
+    <div class="form-card">
+        <div class="form-card-body">
             <h1>Add Funds</h1>
             <form method="post" enctype="multipart/form-data">
                 {{ add_funds_form.hidden_tag() }}
-    
+
                 {{ add_funds_form.amount.label }}
                 {{ add_funds_form.amount() }}
                 {% for error in add_funds_form.amount.errors %}
                     <p>{{ error }}</p>
                 {% endfor %}
-    
+
                 {{ add_funds_form.submit(class='btn-donate btn-submit') }}
             </form>
-        {% endif %}
+        </div>
     </div>
-</div>
+    <div>
+        <a href="{{ url_for('donor.edit_donor_profile', donor_id=donor.id) }}">Edit Profile Details</a>
+    </div>
+{% endif %}
 {% endblock content %}
 
 

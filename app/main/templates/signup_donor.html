@@ -3,7 +3,7 @@
 {% block content %}
 <div class="form-card">
     <div class="form-card-header">
-        <a href="{{ url_for('main.signup_donor') }}" class="donation-link">Donor</a>
+        <a href="{{ url_for('main.signup_donor') }}" class="donation-link" style="color: #f1b04c; border-bottom: solid #ee9f27 3px;">Donor</a>
         <a href="{{ url_for('main.signup_charity') }}" class="donation-link">Charity</a>
     </div>
     <div class="form-card-body">
@@ -40,6 +40,7 @@
         
             {{ donor_form.submit(class='btn-donate') }}
         </form>
+        <a href="{{ url_for('main.login_donor') }}" class="go_to_sign_up_and_login">Already Have An Account?</a>
     </div>
 </div>
 {% endblock content %}

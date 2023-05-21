@@ -1,16 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,\
-                    EmailField,\
-                    PasswordField,\
-                    SubmitField,\
-                    SelectField,\
-                    BooleanField,\
-                    DateTimeField,\
-                    DateField,\
-                    TimeField,\
-                    DateTimeLocalField,\
-                    IntegerField,\
-                    DecimalField
+from wtforms import (SubmitField,
+                    SelectField,
+                    DateTimeLocalField,
+                    DecimalField)
 from wtforms.validators import DataRequired, ValidationError, NumberRange
 from flask_login import current_user
 from datetime import datetime

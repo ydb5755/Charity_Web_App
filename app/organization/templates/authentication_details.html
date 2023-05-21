@@ -49,12 +49,6 @@
                 <p>{{ error }}</p>
             {% endfor %}
 
-            {{ update_form.password.label }}
-            {{ update_form.password() }}
-
-            {{ update_form.confirm_password.label }}
-            {{ update_form.confirm_password() }}
-
             {{ update_form.contact_name.label }}
             {{ update_form.contact_name(value=charity.contact_name) }}
 

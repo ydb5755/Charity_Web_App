@@ -2,8 +2,9 @@ from app.donor import donor
 from flask import render_template, redirect, flash, url_for
 from app.models import Donor, Charity
 from flask_login import current_user, login_required
-from app.donor.forms import AddAdmin, RemoveAdmin, AddFunds
+from app.donor.forms import AddAdmin, RemoveAdmin, AddFunds, UpdateDonorInfoForm
 from app import db
+from werkzeug.security import generate_password_hash
 
 
 @donor.route('/profile/<donor_id>', methods=('GET', 'POST'))
@@ -23,6 +24,31 @@ def profile_page(donor_id):
                            donor=donor,
                            add_funds_form=add_funds_form,
                            is_donor=is_donor)
+
+
+@donor.route('/profile/<donor_id>/edit_donor_profile', methods=('GET', 'POST'))
+def edit_donor_profile(donor_id):
+    donor = Donor.query.filter_by(id=donor_id).first()
+    update_form = UpdateDonorInfoForm()
+    if update_form.validate_on_submit():
+        donor.first_name = update_form.first_name.data
+        donor.last_name = update_form.last_name.data
+        donor.address = update_form.address.data
+        donor.zip_code = update_form.zip_code.data
+        donor.phone_home = update_form.phone_home.data
+        donor.phone_cell = update_form.phone_cell.data
+        donor.email = update_form.email.data
+        # if update_form.password.data:
+        #     if update_form.password.data != update_form.confirm_password.data:
+        #         flash('If you want to update your password then it must match the confirm password field', 'bad')
+        #         return redirect(url_for('edit_donor_profile', donor_id=donor.id))
+        #     donor.password = update_form.password.data
+        db.session.commit()
+        flash('Account has been updated!', 'good')
+        return redirect(url_for('donor.profile_page', donor_id=donor.id))
+    return render_template('edit_donor_profile.html',
+                           donor=donor,
+                           update_form=update_form)
 
 
 @donor.route('authenticate_charity', methods=('GET', 'POST'))

@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from app.models import Charity, Donor, Pledge, Donation
 from app import db, scheduler
 from app.organization.forms import RecurringDonationForm, SingleDonationForm
-from app.main.forms import CharitySignUpForm
+from app.main.forms import CharityAuthenticateForm
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -17,7 +17,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 def authentication_details(charity_id):
     if current_user.admin == False:
         return redirect(url_for('main.home'))
-    update_form = CharitySignUpForm()
+    update_form = CharityAuthenticateForm()
     charity = Charity.query.filter_by(id=charity_id).first()
     if update_form.validate_on_submit():
         check_id = Charity.query.filter_by(id=update_form.id.data).first()
@@ -31,13 +31,6 @@ def authentication_details(charity_id):
             flash('A Charity with this email exists already, please check your info', 'bad')
             return redirect(url_for('organization.authentication_details',
                                     charity_id=charity.id))
-            
-        if update_form.password.data != update_form.confirm_password.data:
-            flash('Passwords do not match, please try again', 'bad')
-            return redirect(url_for('organization.authentication_details',
-                                    charity_id=charity.id))
-        
-        pw = generate_password_hash(update_form.password.data, method='scrypt')
 
         charity.id = update_form.id.data
         charity.charity_name = update_form.charity_name.data
@@ -46,7 +39,6 @@ def authentication_details(charity_id):
         charity.phone = update_form.phone.data
         charity.website = update_form.website.data
         charity.email = update_form.email.data
-        charity.password = pw
         charity.contact_name = update_form.contact_name.data
         charity.contact_cell = update_form.contact_cell.data
         charity.contact_position = update_form.contact_position.data
@@ -161,6 +153,12 @@ def charity_info_page(charity_id):
     charity = Charity.query.filter_by(id=charity_id).first()
     return render_template('charity_info_page.html',
                            charity=charity)
+
+@organization.route('/all_charities')
+def all_charities():
+    charities = Charity.query.filter_by(authenticated=True).all()
+    return render_template('all_charities.html',
+                           charities=charities)
 
 
 
