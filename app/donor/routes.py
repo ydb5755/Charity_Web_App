@@ -112,6 +112,8 @@ def add_funds(donor_id):
 
 @donor.route('/profile/<donor_id>/edit_donor_profile', methods=('GET', 'POST'))
 def edit_donor_profile(donor_id):
+    if not int(current_user.id) == int(donor_id):
+        return redirect(url_for('main.home'))
     donor = Donor.query.filter_by(id=donor_id).first()
     update_form = UpdateDonorInfoForm()
     if update_form.validate_on_submit():
@@ -133,6 +135,8 @@ def edit_donor_profile(donor_id):
 @donor.route('authenticate_charity', methods=('GET', 'POST'))
 @login_required
 def authenticate_charity():
+    if current_user.admin == False:
+        return redirect(url_for('main.home'))
     charities_to_be_confirmed = Charity.query.filter_by(authenticated=False).all()
     return render_template('authenticate_charity.html',
                            charities_to_be_confirmed=charities_to_be_confirmed)

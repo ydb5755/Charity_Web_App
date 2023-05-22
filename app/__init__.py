@@ -1,13 +1,9 @@
-from flask import Flask, session
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from app.config import Config
-from apscheduler.schedulers.background import BackgroundScheduler, BlockingScheduler
-import atexit
-from threading import Thread
-from datetime import datetime
 from flask_apscheduler import APScheduler
 
 db = SQLAlchemy()
@@ -66,37 +62,37 @@ def populate():
                 name_on_account = 'yisroel baum',
                 admin = True
     )
-    for x in range(50):
-        donor = Donor(
-                    first_name      = f'user{x}fn',
-                    last_name       = f'user{x}ln',
-                    address         = f'{x} Jerusalem Road',
-                    zip_code        = f'{x + 10000}',
-                    phone_home      = '0' + f'{x + 721234500}',
-                    phone_cell      = '0' + f'{x + 587061230}',
-                    email           = f'user{x}@gmail.com',
-                    password        = '12',
-                    bank            = '0',
-                    account_number  = f'{x + 1}',
-                    name_on_account = f'user{x}fn user{x}ln'
-        )
-        charity = Charity(
-                        id               = x + 5010,
-                        charity_name     = f'charity{x}',
-                        address          = f'{x} Tel Aviv Road',
-                        zip_code         = f'{x + 20000}',
-                        phone            = '0' + f'{x + 723201250}',
-                        website          = f'charity{x}.com',
-                        email            = f'charity{x}@gmail.com',
-                        password         = '12',
-                        contact_name     = f'contact number {x}',
-                        contact_cell     = '0' + f'{x + 546217512}',
-                        contact_position = 'Charity Collector',
-                        bank             = '0',
-                        account_number   = f'{x + 12305}'
-        )
-        db.session.add(donor)
-        db.session.add(charity)
+    # for x in range(50):
+    #     donor = Donor(
+    #                 first_name      = f'user{x}fn',
+    #                 last_name       = f'user{x}ln',
+    #                 address         = f'{x} Jerusalem Road',
+    #                 zip_code        = f'{x + 10000}',
+    #                 phone_home      = '0' + f'{x + 721234500}',
+    #                 phone_cell      = '0' + f'{x + 587061230}',
+    #                 email           = f'user{x}@gmail.com',
+    #                 password        = '12',
+    #                 bank            = '0',
+    #                 account_number  = f'{x + 1}',
+    #                 name_on_account = f'user{x}fn user{x}ln'
+    #     )
+    #     charity = Charity(
+    #                     id               = x + 5010,
+    #                     charity_name     = f'charity{x}',
+    #                     address          = f'{x} Tel Aviv Road',
+    #                     zip_code         = f'{x + 20000}',
+    #                     phone            = '0' + f'{x + 723201250}',
+    #                     website          = f'charity{x}.com',
+    #                     email            = f'charity{x}@gmail.com',
+    #                     password         = '12',
+    #                     contact_name     = f'contact number {x}',
+    #                     contact_cell     = '0' + f'{x + 546217512}',
+    #                     contact_position = 'Charity Collector',
+    #                     bank             = '0',
+    #                     account_number   = f'{x + 12305}'
+    #     )
+    #     db.session.add(donor)
+    #     db.session.add(charity)
     db.session.add(admin)
     db.session.commit()
 

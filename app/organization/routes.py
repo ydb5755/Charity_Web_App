@@ -1,9 +1,10 @@
 from app.organization import organization
-from flask import render_template, redirect, url_for, flash, current_app
+from flask import render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app.models import Charity, Donor, Pledge, Donation
-from app import db, scheduler, mail
+from app import db, scheduler
 from app.organization.forms import RecurringDonationForm, SingleDonationForm, UpdateCharityInfoForm
+from app.organization.utils import pledge_start_date, pledge_transaction
 from app.main.forms import CharityAuthenticateForm
 from datetime import datetime
 
@@ -13,6 +14,8 @@ from datetime import datetime
 @organization.route('/edit_charity_profile/<charity_id>', methods=('GET', 'POST'))
 @login_required
 def edit_charity_profile(charity_id):
+    if not int(current_user.id) == int(charity_id):
+        return redirect(url_for('main.home'))
     charity = Charity.query.filter_by(id=charity_id).first()
     update_form = UpdateCharityInfoForm()
     if update_form.validate_on_submit():
@@ -91,6 +94,8 @@ def authentication_details(charity_id):
 
 @organization.route('/delete_request/<charity_id>', methods=('GET', 'POST'))
 def delete_request(charity_id):
+    if current_user.admin == False:
+        return redirect(url_for('main.home'))
     charity = Charity.query.filter_by(id=charity_id).first()
     db.session.delete(charity)
     db.session.commit()
@@ -122,34 +127,6 @@ def recurring_donation_page(charity_id):
                            donor=donor,
                            rd_form=rd_form)
 
-
-def pledge_transaction(pledge_id):
-    with scheduler.app.app_context():
-        pledge = Pledge.query.filter_by(id=pledge_id).first()
-        if datetime.now() > pledge.end_date:
-            return scheduler.remove_job(str(pledge.id))
-        if datetime.now() > pledge.start_date:
-            pledge.donor.balance -= pledge.amount
-            pledge.charity.balance += pledge.amount
-            db.session.commit()
-
-
-def pledge_start_date(pledge_id):
-    with scheduler.app.app_context():
-        pledge = Pledge.query.filter_by(id=pledge_id).first()
-        frequency = pledge.frequency
-        if frequency == 'Month':
-            scheduler.add_job(id=str(pledge_id), func=pledge_transaction, args=(pledge.id, ), trigger='cron', day=25, hour=12)
-        else:
-            scheduler.add_job(id=str(pledge_id), func=pledge_transaction, args=(pledge.id, ), trigger='interval', seconds=times.get(frequency))
-
-times = {
-    'Second':1,
-    'Minute':60,
-    'Hour':3600,
-    'Day':86400,
-    'Week':604800
-}
 
 @organization.route('/processing_recurring_donations/charity/<charity_id>/donor/<donor_id>/pledge/<pledge_id>', methods=('GET', 'POST'))
 @login_required
