@@ -15,25 +15,25 @@
             {% endfor %}
 
             {{ add_funds_form.cc_number.label }}
-            {{ add_funds_form.cc_number(disabled) }}
+            {{ add_funds_form.cc_number(disabled=True) }}
             {% for error in add_funds_form.cc_number.errors %}
                 <p>{{ error }}</p>
             {% endfor %}
 
             {{ add_funds_form.expiry_date.label }}
-            {{ add_funds_form.expiry_date(disabled) }}
+            {{ add_funds_form.expiry_date(disabled=True) }}
             {% for error in add_funds_form.expiry_date.errors %}
                 <p>{{ error }}</p>
             {% endfor %}
 
             {{ add_funds_form.sec_code.label }}
-            {{ add_funds_form.sec_code(disabled) }}
+            {{ add_funds_form.sec_code(disabled=True) }}
             {% for error in add_funds_form.sec_code.errors %}
                 <p>{{ error }}</p>
             {% endfor %}
 
             {{ add_funds_form.tz.label }}
-            {{ add_funds_form.tz(disabled) }}
+            {{ add_funds_form.tz(disabled=True) }}
             {% for error in add_funds_form.tz.errors %}
                 <p>{{ error }}</p>
             {% endfor %}
