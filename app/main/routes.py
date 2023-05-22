@@ -79,7 +79,6 @@ def signup_donor():
         if donor_form.password.data != donor_form.confirm_password.data:
             flash('Passwords do not match, please try again', 'bad')
             return redirect(url_for('main.signup_donor'))
-        pw = generate_password_hash(donor_form.password.data, method='scrypt')
         donor = Donor(
                     first_name=donor_form.first_name.data,
                     last_name=donor_form.last_name.data,
@@ -88,7 +87,7 @@ def signup_donor():
                     phone_home=donor_form.phone_home.data,
                     phone_cell=donor_form.phone_cell.data,
                     email=donor_form.email.data,
-                    password=pw
+                    password=generate_password_hash(donor_form.password.data)
         )
         db.session.add(donor)
         db.session.commit()
@@ -114,6 +113,7 @@ def signup_charity():
                         phone = charity_form.phone.data,
                         website = charity_form.website.data,
                         email = charity_form.email.data,
+                        password = generate_password_hash(charity_form.password.data),
                         contact_name = charity_form.contact_name.data,
                         contact_cell = charity_form.contact_cell.data,
                         contact_position = charity_form.contact_position.data,
@@ -164,7 +164,7 @@ def reset_token(token):
         return redirect(url_for('charity.reset_request'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data, method='scrypt')
+        hashed_password = generate_password_hash(form.password.data)
         if charity:
             charity.password = hashed_password
         if donor:
