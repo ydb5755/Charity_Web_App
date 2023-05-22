@@ -153,7 +153,7 @@ def add_admin():
         user.admin = True
         db.session.commit() 
         flash('Admin priviliges added to user')
-        return redirect(url_for('donor.profile_page', donor_id=current_user.id))
+        return redirect(url_for('donor.donor_profile_page', donor_id=current_user.id))
     return render_template('add_admin.html',
                            add_admin_form=add_admin_form)
 
@@ -173,6 +173,6 @@ def remove_admin():
         user.admin = False
         db.session.commit()
         flash('Admin priviliges removed from user')
-        return redirect(url_for('donor.profile_page', donor_id=current_user.id))
+        return redirect(url_for('donor.donor_profile_page', donor_id=current_user.id))
     return render_template('remove_admin.html',
                            remove_admin_form=remove_admin_form)
