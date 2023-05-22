@@ -14,8 +14,11 @@ def home():
     is_charity = isinstance(current_user, Charity)
     all_charities = Charity.query.filter_by(authenticated=True).all()
     five_charities = []
-    for _ in range(5):
-        five_charities.append(all_charities[randint(0, (len(all_charities) - 1))])
+    try:
+        for _ in range(5):
+            five_charities.append(all_charities[randint(0, (len(all_charities) - 1))])
+    except:
+        None
     return render_template('home.html', 
                            all_charities=all_charities,
                            five_charities=five_charities,
@@ -72,10 +75,10 @@ def signup_donor():
     if donor_form.validate_on_submit():
         if Donor.query.filter_by(email=donor_form.email.data).first():
             flash('This email is already signed up, please try another email or try to log in using this email', 'bad')
-            return redirect(url_for('main.signup'))
+            return redirect(url_for('main.signup_donor'))
         if donor_form.password.data != donor_form.confirm_password.data:
             flash('Passwords do not match, please try again', 'bad')
-            return redirect(url_for('main.signup'))
+            return redirect(url_for('main.signup_donor'))
         pw = generate_password_hash(donor_form.password.data, method='scrypt')
         donor = Donor(
                     first_name=donor_form.first_name.data,

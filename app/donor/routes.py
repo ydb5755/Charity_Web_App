@@ -103,7 +103,7 @@ def add_funds(donor_id):
         donor.balance += float(add_funds_form.amount.data)
         db.session.commit()
         flash('Funds added!', 'good')
-        return redirect(url_for('donor.profile_page', donor_id=current_user.id))
+        return redirect(url_for('donor.donor_profile_page', donor_id=current_user.id))
     return render_template('add_funds.html',
                            donor=donor,
                            add_funds_form=add_funds_form)
