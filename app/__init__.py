@@ -53,6 +53,19 @@ def create_app():
 
 from app.models import Donor, Charity
 def populate():
+    admin = Donor(
+                first_name      = 'Yisroel',
+                last_name       = 'Baum',
+                address         = 'Someplace or other',
+                zip_code        = '9945623',
+                phone_cell      = '0258795461',
+                email           = 'yisroel.d.baum@gmail.com',
+                password        = '12',
+                bank            = '0',
+                account_number  = '0',
+                name_on_account = 'yisroel baum',
+                admin = True
+    )
     for x in range(50):
         donor = Donor(
                     first_name      = f'user{x}fn',
@@ -82,6 +95,8 @@ def populate():
                         bank             = '0',
                         account_number   = f'{x + 12305}'
         )
+        db.session.add(donor)
         db.session.add(charity)
-        db.session.commit()
+    db.session.add(admin)
+    db.session.commit()
 
