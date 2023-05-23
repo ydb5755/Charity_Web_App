@@ -3,7 +3,8 @@
 {% block content %}
     <div class="home-landing">
         <div class="home-text">
-            <h1>Welcome to MyPledge!!</h1>
+            <h1>Welcome to MyPledge!</h1>
+            <a class="btn-donate btn-submit" href="{{ url_for('donor.add_funds', donor_id=current_user.id) }}">Fund your account</a>
         </div>
         <div class="home-spacer"></div>
     </div>
