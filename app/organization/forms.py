@@ -10,6 +10,9 @@ from flask_login import current_user
 from datetime import datetime
 
 
+class ConfirmAmountForm(FlaskForm):
+    submit = SubmitField('Confirm Donation')
+
 class SingleDonationForm(FlaskForm):
     amount = DecimalField('Amount:', render_kw={'placeholder': 'Amount'})
     submit = SubmitField('Donate!')
@@ -39,7 +42,7 @@ class UpdateCharityInfoForm(FlaskForm):
 
 class RecurringDonationForm(FlaskForm):
     amount = DecimalField('Amount:', places=2 ,render_kw={'placeholder': 'Amount'})
-    how_often = SelectField('Frequency:', choices=['Second', 'Minute', 'Hour', 'Day', 'Week', 'Month'])
+    how_often = SelectField('Frequency:', choices=['Minute', 'Hour', 'Day', 'Week', 'Month'])
     start = DateTimeLocalField('Start:', format='%Y-%m-%dT%H:%M')
     end = DateTimeLocalField('End:', format='%Y-%m-%dT%H:%M')
     submit = SubmitField('Donate!')
@@ -99,8 +102,7 @@ class RecurringDonationForm(FlaskForm):
                 total_months == 1 and start_data.day == end_data.day and start_data.time() > end_data.time():
                 raise ValidationError('You must choose start and end dates that are at least a month apart')
             if total_months > 12:
-                raise ValidationError('We do not accept recurring donations longer than 12 months. \
-                                      If you would like to make a longer recurring donation please choose a recurring donation with no end and cancel it when you like')
+                raise ValidationError('We do not accept recurring donations longer than 12 months.')
         else:
             raise ValidationError('Something went wrong with the selection, please try again or try choosing another frequency')
 
