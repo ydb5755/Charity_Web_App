@@ -19,7 +19,7 @@ class Donor(db.Model, UserMixin):
     bank            = Column(String(64))
     account_number  = Column(String(64))
     name_on_account = Column(String(64))
-    balance         = Column(Float, default=0)
+    balance         = Column(Float(4), default=0)
     auto_replenish  = Column(Boolean, default=False)
     daily_pledges   = Column(Float, default=0)
     admin           = Column(Boolean, default=False)
@@ -70,7 +70,7 @@ class Charity(db.Model, UserMixin):
     contact_position = Column(String(64))
     bank             = Column(String(64), nullable=False)
     account_number   = Column(String(64), nullable=False)
-    balance          = Column(Float, default=0)
+    balance          = Column(Float(4), default=0)
     home_page_text   = Column(String(200), default='')
     description      = Column(Text, default='')
     authenticated    = Column(Boolean, default=False)
@@ -120,7 +120,7 @@ class Pledge(db.Model):
     frequency  = Column(String, nullable=False)
     start_date = Column(DateTime)
     end_date   = Column(DateTime)
-    amount     = Column(Integer, nullable=False)
+    amount     = Column(Float(4), nullable=False)
     donor_id   = Column(Integer, ForeignKey('donor.id'))
     charity_id = Column(Integer, ForeignKey('charity.id'))
 
@@ -131,13 +131,13 @@ class Pledge(db.Model):
 
 class Donation(db.Model):
     id         = Column(Integer, primary_key=True)
-    amount     = Column(Float, nullable=False)
+    amount     = Column(Float(4), nullable=False)
     donor_id   = Column(Integer, ForeignKey('donor.id'))
     charity_id = Column(Integer, ForeignKey('charity.id'))
 
     def process_donation(self):
-        self.donor.balance -= self.amount
-        self.charity.balance += self.amount
+        self.donor.balance -= float(self.amount)
+        self.charity.balance += float(self.amount)
         db.session.add(self)
         db.session.commit()
 
