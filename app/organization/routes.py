@@ -7,6 +7,7 @@ from app.organization.forms import RecurringDonationForm, SingleDonationForm, Up
 from app.organization.utils import pledge_transaction, times
 from app.main.forms import CharityAuthenticateForm
 from apscheduler.triggers.interval import IntervalTrigger
+from apscheduler.triggers.cron import CronTrigger
 from datetime import datetime
 import logging
 import pytz
@@ -173,10 +174,29 @@ def processing_recurring_donations(charity_id, donor_id, pledge_id):
     pledge = Pledge.query.filter_by(id=pledge_id).first()
     frequency = pledge.frequency
     if frequency == 'Month':
-        scheduler.add_job(id=str(pledge_id), func=pledge_transaction, args=[pledge.id], trigger='cron', day=25, hour=12, misfire_grace_time=None, coalesce=False, max_instances=600)
+        scheduler.add_job(id=str(pledge_id), 
+                          func=pledge_transaction, 
+                          args=[pledge.id], 
+                          trigger=CronTrigger(day=25, 
+                                              hour=12, 
+                                              timezone=pytz.timezone('Israel')
+                                              ),
+                          misfire_grace_time=None, 
+                          coalesce=False, 
+                          max_instances=600)
     else:
         logging.info('before schedule')
-        scheduler.add_job(id=str(pledge_id), func=pledge_transaction, args=[pledge.id], trigger=IntervalTrigger(seconds=times.get(frequency), start_date=pledge.start_date, end_date=pledge.end_date, timezone=pytz.timezone('Israel')), misfire_grace_time=None, coalesce=False, max_instances=600)
+        scheduler.add_job(id=str(pledge_id), 
+                            func=pledge_transaction, 
+                            args=[pledge.id], 
+                            trigger=IntervalTrigger(seconds=times.get(frequency), 
+                                                    start_date=pledge.start_date, 
+                                                    end_date=pledge.end_date, 
+                                                    timezone=pytz.timezone('Israel')
+                                                    ), 
+                            misfire_grace_time=None, 
+                            coalesce=False, 
+                            max_instances=600)
     logging.info('after schedule')
     flash('Recurring payment has been scheduled', 'good')
     return redirect(url_for('organization.recurring_donation_page', charity_id=charity.id, donor_id=donor.id))
