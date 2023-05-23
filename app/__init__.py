@@ -6,14 +6,35 @@ from flask_mail import Mail
 from app.config import Config
 from flask_apscheduler import APScheduler
 from werkzeug.security import generate_password_hash
+import datetime
+
+
+from pytz import utc
+import os
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+
+
 
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
 mail = Mail()
-scheduler = APScheduler()
 
-
+jobstores = {
+    'default': SQLAlchemyJobStore(url=os.environ.get('SQLALCHEMY_DATABASE_URI_POSTGRESQL'), tablename='jobs')
+}
+executors = {
+    'default': ThreadPoolExecutor(20),
+    'processpool': ProcessPoolExecutor(5)
+}
+job_defaults = {
+    'coalesce': False,
+    'max_instances': 20
+}
+apschedule = APScheduler()
+scheduler = BackgroundScheduler(jobstores=jobstores ,executors=executors, job_defaults=job_defaults)
 
 def create_app():
     app = Flask(__name__)
@@ -22,7 +43,7 @@ def create_app():
     migrate.init_app(app,db)
     login_manager.init_app(app)
     mail.init_app(app)
-    scheduler.init_app(app)
+    apschedule.init_app(app)
     scheduler.start()
     from app.models import Donor, Charity
 
@@ -48,6 +69,8 @@ def create_app():
     return app
 
 
+
+        
 from app.models import Donor, Charity
 def populate():
     admin = Donor(
