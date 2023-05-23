@@ -10,7 +10,7 @@ import datetime
 import logging
 
 
-from pytz import utc
+import pytz
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
@@ -35,7 +35,7 @@ job_defaults = {
     'max_instances': 20
 }
 apschedule = APScheduler()
-scheduler = BackgroundScheduler(jobstores=jobstores ,executors=executors, job_defaults=job_defaults)
+scheduler = BackgroundScheduler(jobstores=jobstores ,executors=executors, job_defaults=job_defaults, timezone=pytz.timezone('Israel'))
 
 def create_app():
     app = Flask(__name__)
