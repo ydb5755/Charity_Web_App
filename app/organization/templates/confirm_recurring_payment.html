@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Donation Page{% endblock title %}
+{% block content %}
+<div class="form-card">
+    <h1>{{ charity.charity_name }}</h1>
+    <div class="form-card-body">
+        <h1>Recurring Donation</h1>
+        <h1>Total Amount : {{ total }}</h1>
+        <form method="post" enctype="multipart/form-data">
+            {{ confirm_form.hidden_tag() }}
+        
+            {{ confirm_form.submit(class='btn-donate btn-submit') }}
+        </form>
+    </div>
+</div>
+{% endblock content %}
