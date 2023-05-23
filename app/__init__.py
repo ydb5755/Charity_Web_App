@@ -7,6 +7,7 @@ from app.config import Config
 from flask_apscheduler import APScheduler
 from werkzeug.security import generate_password_hash
 import datetime
+import logging
 
 
 from pytz import utc
@@ -45,6 +46,7 @@ def create_app():
     mail.init_app(app)
     apschedule.init_app(app)
     scheduler.start()
+    logging.basicConfig(level=logging.DEBUG)
     from app.models import Donor, Charity
 
     @login_manager.user_loader
