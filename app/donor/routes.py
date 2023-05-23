@@ -5,6 +5,7 @@ from flask_login import current_user, login_required
 from app.donor.forms import AddAdmin, RemoveAdmin, AddFunds, UpdateDonorInfoForm
 from app import db
 from datetime import datetime
+import pytz
 
 
 @donor.route('/donor_profile/<donor_id>')
@@ -17,7 +18,7 @@ def donor_profile_page(donor_id):
         return redirect(url_for('main.home'))
     donor = Donor.query.filter_by(id=donor_id).first()
     active_donor_pledges = []
-    now = datetime.now()
+    now = datetime.now(pytz.timezone('Israel'))
     for pledge in donor.pledges:
         if pledge.end_date > now > pledge.start_date:
             active_donor_pledges.append(pledge)
@@ -34,7 +35,7 @@ def scheduled_donor_pledges(donor_id):
     if not int(current_user.id) == int(donor_id):
         return redirect(url_for('main.home'))
     donor = Donor.query.filter_by(id=donor_id).first()
-    now = datetime.now()
+    now = datetime.now(pytz.timezone('Israel'))
     scheduled_donor_pledges = []
     for pledge in donor.pledges:
         if now < pledge.start_date:
@@ -52,7 +53,7 @@ def completed_donor_pledges(donor_id):
     if not int(current_user.id) == int(donor_id):
         return redirect(url_for('main.home'))
     donor = Donor.query.filter_by(id=donor_id).first()
-    now = datetime.now()
+    now = datetime.now(pytz.timezone('Israel'))
     completed_donor_pledges = []
     for pledge in donor.pledges:
         if now > pledge.start_date:
