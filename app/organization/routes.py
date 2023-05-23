@@ -136,15 +136,15 @@ def recurring_donation_page(charity_id):
 def confirm_recurring_donation(charity_id, start, end, frequency, amount):
     charity = Charity.query.filter_by(id=charity_id).first()
     donor = Donor.query.filter_by(id=current_user.id).first()
+    ts_start = datetime.strptime(start, '%Y-%m-%d %H:%M:%S').astimezone(pytz.timezone('Israel'))
+    ts_end = datetime.strptime(end, '%Y-%m-%d %H:%M:%S').astimezone(pytz.timezone('Israel'))
     if frequency == 'Month':
-        ts_start = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
-        ts_end = datetime.strptime(end, '%Y-%m-%d %H:%M:%S')
         years = (ts_end.year-ts_start.year)*12
         months = ts_end.month-ts_start.month
         total = float(years + months) * float(amount)
     else:
-        ts_start = float(datetime.strptime(start, '%Y-%m-%d %H:%M:%S').timestamp())
-        ts_end = float(datetime.strptime(end, '%Y-%m-%d %H:%M:%S').timestamp())
+        ts_start = float(ts_start.timestamp())
+        ts_end = float(ts_end.timestamp())
         total = ((ts_end - ts_start) / times.get(frequency)) * float(amount)
     confirm_form = ConfirmAmountForm()
     if confirm_form.validate_on_submit():
