@@ -1,7 +1,7 @@
 from app import db
 from flask import current_app
 from flask_login import UserMixin, current_user
-from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, DateTime, Time, Float, Text
+from sqlalchemy import String, Integer, Column, Boolean, ForeignKey, DateTime, Time, Float, Text, TIMESTAMP
 from datetime import datetime, timezone, timedelta
 import jwt
 
@@ -118,8 +118,8 @@ class Receipt(db.Model):
 class Pledge(db.Model):
     id         = Column(Integer, primary_key=True)
     frequency  = Column(String, nullable=False)
-    start_date = Column(DateTime)
-    end_date   = Column(DateTime)
+    start_date = Column(TIMESTAMP(timezone=True))
+    end_date   = Column(TIMESTAMP(timezone=True))
     amount     = Column(Float(4), nullable=False)
     donor_id   = Column(Integer, ForeignKey('donor.id'))
     charity_id = Column(Integer, ForeignKey('charity.id'))
