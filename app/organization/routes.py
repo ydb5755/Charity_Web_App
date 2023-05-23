@@ -3,11 +3,11 @@ from flask import render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app.models import Charity, Donor, Pledge, Donation
 from app import db, scheduler
-from app.organization.forms import RecurringDonationForm, SingleDonationForm, UpdateCharityInfoForm
-from app.organization.utils import pledge_start_date, pledge_transaction
+from app.organization.forms import RecurringDonationForm, SingleDonationForm, UpdateCharityInfoForm, ConfirmAmountForm
+from app.organization.utils import pledge_transaction, times
 from app.main.forms import CharityAuthenticateForm
+from apscheduler.triggers.interval import IntervalTrigger
 from datetime import datetime
-
 
 
 
@@ -51,6 +51,7 @@ def charity_profile_page(charity_id):
     return render_template('charity_profile_page.html',
                            charity=charity)
 
+
 @organization.route('/authentication_details/<charity_id>', methods=('GET', 'POST'))
 @login_required
 def authentication_details(charity_id):
@@ -92,6 +93,7 @@ def authentication_details(charity_id):
                            charity=charity,
                            update_form=update_form)
 
+
 @organization.route('/delete_request/<charity_id>', methods=('GET', 'POST'))
 def delete_request(charity_id):
     if current_user.admin == False:
@@ -110,22 +112,53 @@ def recurring_donation_page(charity_id):
     donor = Donor.query.filter_by(id=current_user.id).first()
     rd_form = RecurringDonationForm()
     if rd_form.validate_on_submit():
-        dt_start = rd_form.start.data
-        dt_end = rd_form.end.data
-        pledge = Pledge(
-            frequency=rd_form.how_often.data,
-            start_date=dt_start,
-            end_date=dt_end,
-            amount=float(rd_form.amount.data),
-            donor=donor,
-            charity=charity
-        )
-        pledge.process_pledge()
-        return redirect(url_for('organization.processing_recurring_donations', charity_id=charity.id, donor_id=donor.id, pledge_id=pledge.id))
+        start = rd_form.start.data
+        end = rd_form.end.data
+        frequency = rd_form.how_often.data
+        amount=float(rd_form.amount.data)
+        return redirect(url_for('organization.confirm_recurring_donation', 
+                                charity_id=charity.id,
+                                start=start,
+                                end=end,
+                                frequency=frequency,
+                                amount=amount))
     return render_template('recurring_donation_page.html',
                            charity=charity,
                            donor=donor,
                            rd_form=rd_form)
+
+
+@organization.route('/confirm_recurring_donation/<charity_id>/<start>/<end>/<frequency>/<amount>', methods=('GET', 'POST'))
+@login_required
+def confirm_recurring_donation(charity_id, start, end, frequency, amount):
+    charity = Charity.query.filter_by(id=charity_id).first()
+    donor = Donor.query.filter_by(id=current_user.id).first()
+    if frequency == 'Month':
+        ts_start = datetime.strptime(start, '%Y-%m-%d %H:%M:%S')
+        ts_end = datetime.strptime(end, '%Y-%m-%d %H:%M:%S')
+        years = (ts_end.year-ts_start.year)*12
+        months = ts_end.month-ts_start.month
+        total = float(years + months) * float(amount)
+    else:
+        ts_start = float(datetime.strptime(start, '%Y-%m-%d %H:%M:%S').timestamp())
+        ts_end = float(datetime.strptime(end, '%Y-%m-%d %H:%M:%S').timestamp())
+        total = ((ts_end - ts_start) / times.get(frequency)) * float(amount)
+    confirm_form = ConfirmAmountForm()
+    if confirm_form.validate_on_submit():
+        pledge = Pledge(
+            frequency=frequency,
+            start_date=start,
+            end_date=end,
+            amount=amount,
+            donor=donor,
+            charity=charity
+        )
+        pledge.process_pledge()
+        return redirect(url_for('organization.processing_recurring_donations', charity_id=pledge.charity.id, donor_id=pledge.donor.id, pledge_id=pledge.id))
+    return render_template('confirm_recurring_payment.html',
+                           confirm_form=confirm_form,
+                           total=total,
+                           charity=charity)
 
 
 @organization.route('/processing_recurring_donations/charity/<charity_id>/donor/<donor_id>/pledge/<pledge_id>', methods=('GET', 'POST'))
@@ -136,7 +169,12 @@ def processing_recurring_donations(charity_id, donor_id, pledge_id):
     charity = Charity.query.filter_by(id=charity_id).first()
     donor = Donor.query.filter_by(id=donor_id).first()
     pledge = Pledge.query.filter_by(id=pledge_id).first()
-    scheduler.add_job(id=pledge_id, func=pledge_start_date, args=(pledge.id, ), trigger='date', run_date=pledge.start_date)
+    frequency = pledge.frequency
+    if frequency == 'Month':
+        scheduler.add_job(id=str(pledge_id), func=pledge_transaction, args=[pledge.id], trigger='cron', day=25, hour=12, misfire_grace_time=None, coalesce=False, max_instances=600)
+    else:
+        scheduler.add_job(id=str(pledge_id), func=pledge_transaction, args=[pledge.id], trigger=IntervalTrigger(seconds=times.get(frequency), start_date=pledge.start_date, end_date=pledge.end_date), misfire_grace_time=None, coalesce=False, max_instances=600)
+    flash('Recurring payment has been scheduled', 'good')
     return redirect(url_for('organization.recurring_donation_page', charity_id=charity.id, donor_id=donor.id))
 
 
@@ -147,18 +185,35 @@ def one_time_donation_page(charity_id):
     donor = Donor.query.filter_by(id=current_user.id).first()
     sd_form = SingleDonationForm()
     if sd_form.validate_on_submit():
-        donation = Donation(
-            amount=float(sd_form.amount.data),
-            donor=donor,
-            charity=charity
-        )
-        donation.process_donation()
-        flash('Donation made succesfully!')
-        return redirect(url_for('organization.one_time_donation_page', charity_id=charity.id, donor_id=donor.id))
+        amount=float(sd_form.amount.data)
+        donor=donor
+        charity=charity
+        return redirect(url_for('organization.confirm_one_time_donation', charity_id=charity.id, amount=amount))
     return render_template('one_time_donation_page.html',
                            charity=charity,
                            donor=donor,
                            sd_form=sd_form)
+
+
+@organization.route('/confirm_one_time_donation/<charity_id>/<amount>', methods=('GET', 'POST'))
+@login_required
+def confirm_one_time_donation(charity_id, amount):
+    charity = Charity.query.filter_by(id=charity_id).first()
+    donor = Donor.query.filter_by(id=current_user.id).first()
+    confirm_form = ConfirmAmountForm()
+    if confirm_form.validate_on_submit():
+        donation = Donation(
+            amount=amount,
+            donor=donor,
+            charity=charity
+        )
+        donation.process_donation()
+        flash('Donation made succesfully!', 'good')
+        return redirect(url_for('organization.one_time_donation_page', charity_id=donation.charity.id))
+    return render_template('confirm_one_time_payment.html',
+                           confirm_form=confirm_form,
+                           amount=amount,
+                           charity=charity)
 
 
 @organization.route('/charity_info_page/<charity_id>')
@@ -166,6 +221,7 @@ def charity_info_page(charity_id):
     charity = Charity.query.filter_by(id=charity_id).first()
     return render_template('charity_info_page.html',
                            charity=charity)
+
 
 @organization.route('/all_charities')
 def all_charities():
