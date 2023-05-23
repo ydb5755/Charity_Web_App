@@ -3,6 +3,7 @@
 {% block content %}
 
 <div class="form-card">
+    <h1>{{ charity.charity_name }}</h1>
     <div class="form-card-header">
         <a href="{{ url_for('organization.recurring_donation_page', charity_id=charity.id) }}" class="donation-link" style="color: #f1b04c; border-bottom: solid #ee9f27 3px;">Recurring</a>
         <a href="{{ url_for('organization.one_time_donation_page', charity_id=charity.id) }}" class="donation-link">One-Time</a>
