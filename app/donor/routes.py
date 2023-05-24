@@ -21,6 +21,8 @@ def donor_profile_page(donor_id):
     now = datetime.now(tz=pytz.timezone('Israel'))
     for pledge in donor.pledges:
         if pledge.end_date > now > pledge.start_date:
+            pledge.start_date = pledge.start_date.astimezone(tz=pytz.timezone('Israel'))
+            pledge.end_date = pledge.end_date.astimezone(tz=pytz.timezone('Israel'))
             active_donor_pledges.append(pledge)
     return render_template('profile.html',
                            donor=donor,
@@ -59,6 +61,8 @@ def completed_donor_pledges(donor_id):
     completed_donor_pledges = []
     for pledge in donor.pledges:
         if now > pledge.start_date:
+            pledge.start_date = pledge.start_date.astimezone(tz=pytz.timezone('Israel'))
+            pledge.end_date = pledge.end_date.astimezone(tz=pytz.timezone('Israel'))
             completed_donor_pledges.append(pledge)
     return render_template('completed_donor_pledges.html',
                            donor=donor,
