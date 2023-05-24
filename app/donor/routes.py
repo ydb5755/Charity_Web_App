@@ -39,6 +39,7 @@ def scheduled_donor_pledges(donor_id):
     scheduled_donor_pledges = []
     for pledge in donor.pledges:
         if now < pledge.start_date:
+            pledge.start_date = pledge.start_date.astimezone(tz=pytz.timezone('Israel'))
             scheduled_donor_pledges.append(pledge)
     return render_template('scheduled_donor_pledges.html',
                            donor=donor,
