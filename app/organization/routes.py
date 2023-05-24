@@ -136,20 +136,17 @@ def recurring_donation_page(charity_id):
 def confirm_recurring_donation(charity_id, start, end, frequency, amount):
     charity = Charity.query.filter_by(id=charity_id).first()
     donor = Donor.query.filter_by(id=current_user.id).first()
-    time_zone_start = start.astimezone(pytz.timezone('Israel'))
-    time_zone_end = end.astimezone(pytz.timezone('Israel'))
-
-
-    # time_zone_start = datetime.strptime(start, '%Y-%m-%d %H:%M:%S').astimezone(pytz.timezone('Israel'))
-    # time_zone_end = datetime.strptime(end, '%Y-%m-%d %H:%M:%S').astimezone(pytz.timezone('Israel'))
+    time_zone_start = datetime.strptime(start, '%Y-%m-%d %H:%M:%S').astimezone(tz=pytz.utc)
+    time_zone_end = datetime.strptime(end, '%Y-%m-%d %H:%M:%S').astimezone(tz=pytz.utc)
+    
     if frequency == 'Month':
         years = (time_zone_end.year-time_zone_start.year)*12
         months = time_zone_end.month-time_zone_start.month
         total = float(years + months) * float(amount)
     else:
         time_stamp_start = float(time_zone_start.timestamp())
-        ts_end = float(time_zone_end.timestamp())
-        total = ((ts_end - time_stamp_start) / times.get(frequency)) * float(amount)
+        time_stamp_end = float(time_zone_end.timestamp())
+        total = ((time_stamp_end - time_stamp_start) / times.get(frequency)) * float(amount)
     confirm_form = ConfirmAmountForm()
     if confirm_form.validate_on_submit():
         pledge = Pledge(
@@ -189,7 +186,6 @@ def processing_recurring_donations(charity_id, donor_id, pledge_id):
                           coalesce=False, 
                           max_instances=600)
     else:
-        logging.info('before schedule')
         scheduler.add_job(id=str(pledge_id), 
                             func=pledge_transaction, 
                             args=[pledge.id], 
@@ -201,7 +197,6 @@ def processing_recurring_donations(charity_id, donor_id, pledge_id):
                             misfire_grace_time=None, 
                             coalesce=False, 
                             max_instances=600)
-    logging.info('after schedule')
     flash('Recurring payment has been scheduled', 'good')
     return redirect(url_for('organization.recurring_donation_page', charity_id=charity.id, donor_id=donor.id))
 
