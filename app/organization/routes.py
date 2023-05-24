@@ -121,8 +121,8 @@ def recurring_donation_page(charity_id):
         amount=float(rd_form.amount.data)
         return redirect(url_for('organization.confirm_recurring_donation', 
                                 charity_id=charity.id,
-                                start_as_dat=start,
-                                end_as_date=end,
+                                start=start,
+                                end=end,
                                 frequency=frequency,
                                 amount=amount))
     return render_template('recurring_donation_page.html',
