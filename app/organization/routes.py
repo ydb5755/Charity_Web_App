@@ -184,7 +184,7 @@ def processing_recurring_donations(charity_id, donor_id, pledge_id):
                                               ),
                           misfire_grace_time=None, 
                           coalesce=False, 
-                          max_instances=600)
+                          max_instances=20)
     else:
         scheduler.add_job(id=str(pledge_id), 
                             func=pledge_transaction, 
@@ -196,7 +196,7 @@ def processing_recurring_donations(charity_id, donor_id, pledge_id):
                                                     ), 
                             misfire_grace_time=None, 
                             coalesce=False, 
-                            max_instances=600)
+                            max_instances=20)
     flash('Recurring payment has been scheduled', 'good')
     return redirect(url_for('organization.recurring_donation_page', charity_id=charity.id, donor_id=donor.id))
 
