@@ -136,8 +136,8 @@ def recurring_donation_page(charity_id):
 def confirm_recurring_donation(charity_id, start, end, frequency, amount):
     charity = Charity.query.filter_by(id=charity_id).first()
     donor = Donor.query.filter_by(id=current_user.id).first()
-    time_zone_start = datetime.strptime(start, '%Y-%m-%d %H:%M:%S').replace(tz=pytz.utc)
-    time_zone_end = datetime.strptime(end, '%Y-%m-%d %H:%M:%S').replace(tz=pytz.utc)
+    time_zone_start = datetime.strptime(start, '%Y-%m-%d %H:%M:%S').replace(tzinfo=pytz.utc)
+    time_zone_end = datetime.strptime(end, '%Y-%m-%d %H:%M:%S').replace(tzinfo=pytz.utc)
     # print(time_zone_start.astimezone(pytz.timezone('Israel')))
     # print(time_zone_end.astimezone(pytz.timezone('Israel')))
     if frequency == 'Month':
