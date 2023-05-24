@@ -115,14 +115,14 @@ def recurring_donation_page(charity_id):
     donor = Donor.query.filter_by(id=current_user.id).first()
     rd_form = RecurringDonationForm()
     if rd_form.validate_on_submit():
-        start = rd_form.start.data
+        start = rd_form.start.data   
         end = rd_form.end.data
         frequency = rd_form.how_often.data
         amount=float(rd_form.amount.data)
         return redirect(url_for('organization.confirm_recurring_donation', 
                                 charity_id=charity.id,
-                                start=start,
-                                end=end,
+                                start_as_dat=start,
+                                end_as_date=end,
                                 frequency=frequency,
                                 amount=amount))
     return render_template('recurring_donation_page.html',
@@ -150,8 +150,8 @@ def confirm_recurring_donation(charity_id, start, end, frequency, amount):
     if confirm_form.validate_on_submit():
         pledge = Pledge(
             frequency=frequency,
-            start_date=start,
-            end_date=end,
+            start_date=ts_start,
+            end_date=ts_end,
             amount=amount,
             donor=donor,
             charity=charity
