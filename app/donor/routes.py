@@ -133,7 +133,7 @@ def edit_donor_profile(donor_id):
         donor.email = update_form.email.data
         db.session.commit()
         flash('Account has been updated!', 'good')
-        return redirect(url_for('donor.profile_page', donor_id=donor.id))
+        return redirect(url_for('donor.donor_profile_page', donor_id=donor.id))
     return render_template('edit_donor_profile.html',
                            donor=donor,
                            update_form=update_form)
